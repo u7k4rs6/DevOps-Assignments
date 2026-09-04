@@ -2,7 +2,7 @@
 
 **Name:** Utkarsh Bahuguna &nbsp;&nbsp;**Enrollment Number:** 10161
 
-## Task — System Information Script
+## Task: System Information Script
 
 **Script:** [`sysinfo.sh`](sysinfo.sh)
 
@@ -87,13 +87,13 @@ echo "Lines written: $(wc -l < "$report_file")"
 
 | Choice | Why |
 |---|---|
-| `set -u` | Abort on an undefined variable rather than silently expanding to an empty string — a `mkdir ""` bug is much harder to spot than an error message. |
+| `set -u` | Abort on an undefined variable rather than silently expanding to an empty string - a `mkdir ""` bug is much harder to spot than an error message. |
 | `$(...)` command substitution | Captures each command's output into a variable once, so the same value is reused instead of re-running `date` and getting two different timestamps. |
 | `read -rp` | `-r` stops backslashes in the input being treated as escapes; `-p` prints the prompt without a separate `echo`. |
 | `[ -z "$dir_name" ]` fallback | Pressing Enter with no input would otherwise create nothing and write to `/testProcess.txt`. |
-| `mkdir -p` | Idempotent — re-running the script does not fail on an existing directory. |
+| `mkdir -p` | Idempotent - re-running the script does not fail on an existing directory. |
 | `cut -c 1-100` on `ps` | Chrome's command lines are ~2000 characters wide and destroy the table layout. |
-| `>` then `>>` | `>` truncates and writes the header, `>>` appends the process list — both forms of redirection demonstrated. |
+| `>` then `>>` | `>` truncates and writes the header, `>>` appends the process list - both forms of redirection demonstrated. |
 | Quoting `"$dir_name"` everywhere | A directory name with a space would otherwise split into two arguments. |
 
 ### How to run
@@ -169,7 +169,7 @@ $ wc -l sysreport/testProcess.txt
 
 The first two lines came from the `>` redirection (the header block), and the remaining 447 from the `>>` append of `ps aux`.
 
-### Edge case — empty input
+### Edge case: empty input
 
 ```bash
 $ ./sysinfo.sh

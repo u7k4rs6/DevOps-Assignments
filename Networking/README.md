@@ -2,7 +2,7 @@
 
 **Name:** Utkarsh Bahuguna &nbsp;&nbsp;**Enrollment Number:** 10161
 
-## Task — Network Troubleshooting Script
+## Task: Network Troubleshooting Script
 
 **Script:** [`netcheck.sh`](netcheck.sh)
 
@@ -12,8 +12,8 @@ The script walks the network stack **from the bottom up**, because that is the o
 
 | Layer | Question | Command |
 |---|---|---|
-| 1–2 Link | Is there an interface, and is it UP? | `ip -br addr` |
-| 3 Network | Is there a route out — a default gateway? | `ip route` |
+| 1-2 Link | Is there an interface, and is it UP? | `ip -br addr` |
+| 3 Network | Is there a route out - a default gateway? | `ip route` |
 | Naming | Does the name resolve to an address? | `nslookup`, `dig +short` |
 | 3 Reachability | Do packets reach the host and come back? | `ping -c 4` |
 | 3 Path | *Where* on the path do packets die? | `tracepath` / `traceroute` |
@@ -125,7 +125,7 @@ echo "Full report saved to: $report_file"
 | `ping_status=$?` captured immediately | `$?` is overwritten by the very next command, so it must be saved on the line straight after the `ping`. |
 | `tracepath` fallback | `traceroute` is **not installed by default on Ubuntu 26.04**. `tracepath` ships with `iputils`, needs no root, and answers the same question. The script picks whichever exists. |
 | `dig +short` alongside `nslookup` | `nslookup` output is verbose; `+short` gives a clean list that is easy to eyeball. Two resolvers also distinguish "DNS is broken" from "this one tool is being odd". |
-| `curl -w` timing | Splits total latency into DNS vs TCP connect vs total — which tells you whether slowness is a name-resolution problem or a network one. |
+| `curl -w` timing | Splits total latency into DNS vs TCP connect vs total - which tells you whether slowness is a name-resolution problem or a network one. |
 | `tee -a` for the summary | The verdict needs to appear both on screen and in the report file. |
 
 ### How to run
@@ -236,13 +236,13 @@ Result: google.com is REACHABLE (ping exit code 0).
 
 ### Reading the report
 
-- **Interfaces** — `wlp0s20f3` is UP with a DHCP address; `enp7s0` (ethernet) is DOWN because nothing is plugged in. That is normal, not a fault. The `veth*` and `br-*` interfaces are Docker's, from the containers in the Docker assignments.
-- **Routing** — `default via 100.128.160.1 dev wlp0s20f3` is the line that matters. Without a default route, nothing off the local subnet is reachable, no matter how healthy DNS is.
-- **DNS** — the resolver is `127.0.0.53`, which is `systemd-resolved`'s stub listener, not the real upstream server. Google returns six IPv4 and four IPv6 addresses, so the client picks one per connection.
-- **Ping** — 0% loss, ~16 ms average, and `mdev` (jitter) under 1 ms: a healthy link.
-- **tracepath** — hops 1–3 resolve (home router, then the ISP), then `no reply` from hop 4 onward. **This is not a fault.** Google's edge routers and most backbone routers deliberately do not answer the TTL-expired probes traceroute relies on. Since ping and curl both succeed, the path is fine; the intermediate hops are simply silent.
-- **`ss -tulpn`** — everything is bound to `127.0.0.1`, so none of these services are exposed to the network. Worth confirming on any machine you care about.
-- **curl timing** — DNS took 1.8 ms and the TCP connect 25 ms. If a site felt slow and `dns=` were 2 seconds, you would know instantly where to look.
+- **Interfaces** - `wlp0s20f3` is UP with a DHCP address; `enp7s0` (ethernet) is DOWN because nothing is plugged in. That is normal, not a fault. The `veth*` and `br-*` interfaces are Docker's, from the containers in the Docker assignments.
+- **Routing** - `default via 100.128.160.1 dev wlp0s20f3` is the line that matters. Without a default route, nothing off the local subnet is reachable, no matter how healthy DNS is.
+- **DNS** - the resolver is `127.0.0.53`, which is `systemd-resolved`'s stub listener, not the real upstream server. Google returns six IPv4 and four IPv6 addresses, so the client picks one per connection.
+- **Ping** - 0% loss, ~16 ms average, and `mdev` (jitter) under 1 ms: a healthy link.
+- **tracepath** - hops 1-3 resolve (home router, then the ISP), then `no reply` from hop 4 onward. **This is not a fault.** Google's edge routers and most backbone routers deliberately do not answer the TTL-expired probes traceroute relies on. Since ping and curl both succeed, the path is fine; the intermediate hops are simply silent.
+- **`ss -tulpn`** - everything is bound to `127.0.0.1`, so none of these services are exposed to the network. Worth confirming on any machine you care about.
+- **curl timing** - DNS took 1.8 ms and the TCP connect 25 ms. If a site felt slow and `dns=` were 2 seconds, you would know instantly where to look.
 
 ### Failure case
 
@@ -275,9 +275,9 @@ ping: nosuchhost.invalid: Name or service not known
                                         <- nothing to trace
 ```
 
-**The diagnosis is unambiguous.** `NXDOMAIN` means the DNS server authoritatively answered "that name does not exist". Ping never sent a single packet — it failed at name resolution, before any networking happened. The interfaces and routing table in the same report are healthy, which rules out the link and the gateway.
+**The diagnosis is unambiguous.** `NXDOMAIN` means the DNS server authoritatively answered "that name does not exist". Ping never sent a single packet - it failed at name resolution, before any networking happened. The interfaces and routing table in the same report are healthy, which rules out the link and the gateway.
 
-So the fault is at the **naming layer**, not the network: a typo, a missing DNS record, or the wrong search domain. Compare that with a report where DNS resolves fine but ping shows 100% packet loss — that would point at a firewall or a routing problem instead. Collecting all the layers in one report is what makes the difference visible.
+So the fault is at the **naming layer**, not the network: a typo, a missing DNS record, or the wrong search domain. Compare that with a report where DNS resolves fine but ping shows 100% packet loss - that would point at a firewall or a routing problem instead. Collecting all the layers in one report is what makes the difference visible.
 
 ### Exit codes
 
@@ -285,7 +285,7 @@ So the fault is at the **naming layer**, not the network: a typo, a missing DNS 
 |---|---|
 | `0` | Host replied |
 | `1` | Name resolved, but no reply (firewall, host down, ICMP blocked) |
-| `2` | Other error — **including DNS failure**, as seen above |
+| `2` | Other error - **including DNS failure**, as seen above |
 
 The script branches on this to produce its verdict.
 

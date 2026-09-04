@@ -4,11 +4,11 @@
 
 ---
 
-## Task 1 — Multi-Stage Dockerfile
+## Task 1: Multi-Stage Dockerfile
 
 ### What a multi-stage build is
 
-A multi-stage Dockerfile has **more than one `FROM`**. Each `FROM` starts a fresh stage with a clean filesystem. The final image is built from the **last stage only** — everything in the earlier stages is discarded unless you explicitly `COPY --from=<stage>` it forward.
+A multi-stage Dockerfile has **more than one `FROM`**. Each `FROM` starts a fresh stage with a clean filesystem. The final image is built from the **last stage only** - everything in the earlier stages is discarded unless you explicitly `COPY --from=<stage>` it forward.
 
 That solves a real tension. Building an application needs compilers, dev dependencies, test runners and caches. Running it needs almost none of that. Without multi-stage builds you either ship all the build tooling to production or maintain two separate Dockerfiles that inevitably drift apart.
 
@@ -91,7 +91,7 @@ Successfully tagged multi-stage-hello:latest
 
 **Step 6 is the whole point.** A second `FROM` on the same base image starts a brand-new filesystem. The 405 packages installed at step 4 exist only in the builder stage; step 9 installs 74 into the clean stage. `COPY --from=builder` at steps 8 and 10 is the only bridge between them.
 
-> **Note on the builder used.** Docker Buildx is not installed on this machine, so the build ran on Docker's legacy builder, which labels output `Step N/12` rather than BuildKit's `[builder 4/5]` / `[production 4/5]` form. The multi-stage semantics are identical — the `FROM ... AS production` at step 6 is the stage boundary.
+> **Note on the builder used.** Docker Buildx is not installed on this machine, so the build ran on Docker's legacy builder, which labels output `Step N/12` rather than BuildKit's `[builder 4/5]` / `[production 4/5]` form. The multi-stage semantics are identical - the `FROM ... AS production` at step 6 is the stage boundary.
 
 ### Application output
 
@@ -107,7 +107,7 @@ Verified: the application displays **Hello World from Docker multi-stage build**
 
 ---
 
-## Task 2 — Documentation
+## Task 2: Documentation
 
 **Name:** Utkarsh Bahuguna &nbsp;&nbsp;**Enrollment Number:** 10161
 
@@ -130,7 +130,7 @@ The `PORTS` column reads `0.0.0.0:8080->8080/tcp`, confirming the app is publish
 
 ---
 
-## Task 3 — Proving the multi-stage build actually helps
+## Task 3: Proving the multi-stage build actually helps
 
 Claiming a multi-stage build is smaller means nothing without a control. So the identical application was also built **single-stage**, from the **same `node:20-alpine` base**, using [`Dockerfile.single-stage`](Dockerfile.single-stage):
 
@@ -181,8 +181,8 @@ server.js
 
 Two distinct problems in the single-stage image:
 
-1. **228 extra `node_modules` directories** — eslint, jest and their transitive dependencies, none of which can run anything in production.
-2. **Build files shipped to production** — `Dockerfile`, `Dockerfile.single-stage` and `script.sh` are all inside the running image. `COPY . .` copied the entire build context. The multi-stage image contains exactly four entries because `COPY --from=builder /app/server.js ./` names precisely one file.
+1. **228 extra `node_modules` directories** - eslint, jest and their transitive dependencies, none of which can run anything in production.
+2. **Build files shipped to production** - `Dockerfile`, `Dockerfile.single-stage` and `script.sh` are all inside the running image. `COPY . .` copied the entire build context. The multi-stage image contains exactly four entries because `COPY --from=builder /app/server.js ./` names precisely one file.
 
 That second point is a **security** argument as much as a size one. Every file in the image is a file an attacker who reaches the container can read.
 
@@ -206,9 +206,9 @@ The two techniques are independent and multiply:
 
 ### Why this matters in practice
 
-- **Deployment speed** — every pull, on every node, every deploy and rollback moves 8x less data.
-- **Attack surface** — no compilers, no `npm` dev tooling, no source history in a production container. A CVE in `eslint` cannot affect an image that does not contain it.
-- **Registry cost** — storage and egress scale with image size across every tag you keep.
+- **Deployment speed** - every pull, on every node, every deploy and rollback moves 8x less data.
+- **Attack surface** - no compilers, no `npm` dev tooling, no source history in a production container. A CVE in `eslint` cannot affect an image that does not contain it.
+- **Registry cost** - storage and egress scale with image size across every tag you keep.
 
 ---
 
@@ -250,7 +250,7 @@ npm-debug.log
 README.md
 ```
 
-Excluding `node_modules` is not just tidiness. Without it, `COPY . .` would copy the **host's** `node_modules` — built against the host's OS and CPU architecture — over the top of the ones installed inside the image, which is a classic source of "works on my machine, segfaults in the container" native-module failures.
+Excluding `node_modules` is not just tidiness. Without it, `COPY . .` would copy the **host's** `node_modules` - built against the host's OS and CPU architecture - over the top of the ones installed inside the image, which is a classic source of "works on my machine, segfaults in the container" native-module failures.
 
 ---
 

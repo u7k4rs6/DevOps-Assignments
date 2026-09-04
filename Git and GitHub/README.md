@@ -6,7 +6,7 @@ Both tasks were run in throwaway repositories; the transcripts below are the rea
 
 ---
 
-## Task 1 — `git commit -a -m` vs `git commit -m`
+## Task 1: `git commit -a -m` vs `git commit -m`
 
 ### The concept
 
@@ -16,7 +16,7 @@ Git has three places a change can live: the **working tree** (your files), the *
 - `git commit -a -m "msg"` first stages **every modification and deletion of a file Git already tracks**, then commits.
 - `-a` does **not** stage **untracked** files. Git has never seen them, so it has no prior version to compare against and will not guess that you want them.
 
-### Case A — `git commit -m` with nothing staged
+### Case A: `git commit -m` with nothing staged
 
 ```bash
 $ echo "change" >> file.txt      # modify a TRACKED file
@@ -44,7 +44,7 @@ Nothing was committed. The index was empty, so there was nothing to make a commi
 
 Read the status codes: ` M` means modified in the working tree but **not** staged (the first column is the index, the second is the working tree). `??` means untracked.
 
-### Case B — `git commit -a -m`
+### Case B: `git commit -a -m`
 
 ```bash
 $ git commit -a -m "Auto-stage tracked changes"
@@ -55,9 +55,9 @@ $ git status --short
 ?? newfile.txt
 ```
 
-`file.txt` was staged and committed in one step. **`newfile.txt` is still untracked** — `-a` skipped it entirely. The commit summary confirms it: `1 file changed`, not 2.
+`file.txt` was staged and committed in one step. **`newfile.txt` is still untracked** - `-a` skipped it entirely. The commit summary confirms it: `1 file changed`, not 2.
 
-### Case C — an untracked file needs an explicit `git add`
+### Case C: an untracked file needs an explicit `git add`
 
 ```bash
 $ git add newfile.txt && git commit -m "Add newfile"
@@ -69,9 +69,9 @@ $ git status --short
   (clean)
 ```
 
-Note `create mode 100644` — that line only appears when a file enters the repository for the first time.
+Note `create mode 100644` - that line only appears when a file enters the repository for the first time.
 
-### Case D — `-a` also stages deletions
+### Case D: `-a` also stages deletions
 
 ```bash
 $ rm newfile.txt
@@ -96,13 +96,13 @@ a30101c Add newfile
 3ad5243 Initial commit
 ```
 
-Four commits, and "Try without staging" is not among them — Case A really did commit nothing.
+Four commits, and "Try without staging" is not among them - Case A really did commit nothing.
 
 ### Summary
 
 | Command | Stages tracked modifications | Stages tracked deletions | Includes new / untracked files |
 |---|---|---|---|
-| `git commit -m "msg"` | No — index only | No | No |
+| `git commit -m "msg"` | No - index only | No | No |
 | `git commit -a -m "msg"` | **Yes** | **Yes** | **No** |
 | `git add . && git commit -m "msg"` | Yes | Yes | **Yes** |
 
@@ -112,13 +112,13 @@ Full log: [`outputs/03-commit-flags.txt`](outputs/03-commit-flags.txt)
 
 ---
 
-## Task 2 — Git Cherry-Pick
+## Task 2: Git Cherry-Pick
 
 ### The concept
 
 **Cherry-picking copies the *change* introduced by one commit and replays it on your current branch.** It does not merge a branch and it does not bring along the commits before it. The result is a **new commit with a new hash** carrying the same diff.
 
-Because it replays a diff, cherry-pick can conflict exactly like a merge can — and it will, whenever the commit's changes depend on something that is not on your branch. Both outcomes are demonstrated below.
+Because it replays a diff, cherry-pick can conflict exactly like a merge can - and it will, whenever the commit's changes depend on something that is not on your branch. Both outcomes are demonstrated below.
 
 ### Setup
 
@@ -157,7 +157,7 @@ The two feature commits are deliberately different in kind:
 - **Feature commit 3** edits `file.txt`, which already exists on `main`.
 - **Feature commit 2** edits `feature.txt`, which was *created* by Feature commit 1 and therefore does **not** exist on `main`.
 
-### Scenario A — a clean cherry-pick
+### Scenario A: a clean cherry-pick
 
 Pick `e54aab7` ("Feature commit 3"). It touches a file that exists on `main`, so the patch applies cleanly.
 
@@ -186,9 +186,9 @@ e7491fb Add main feature
 61c3552 Add line 3
 ```
 
-The hotfix is now on `main` as commit `e653f26`, while the original on `feature` is still `e54aab7`. **Different hash, same change** — and notice Git preserved the original *author date* (`Sat Sep 5 15:00:00`) while giving the commit a new committer date.
+The hotfix is now on `main` as commit `e653f26`, while the original on `feature` is still `e54aab7`. **Different hash, same change** - and notice Git preserved the original *author date* (`Sat Sep 5 15:00:00`) while giving the commit a new committer date.
 
-### Scenario B — a cherry-pick that conflicts
+### Scenario B: a cherry-pick that conflicts
 
 Now pick `f194c1f` ("Feature commit 2"). That commit *modifies* `feature.txt`, but on `main` that file does not exist, because Feature commit 1 was never picked.
 
@@ -213,7 +213,7 @@ $ git status --short
 DU feature.txt
 ```
 
-`DU` = **D**eleted by us, **U**pdated by them — the two-letter conflict code for exactly this situation.
+`DU` = **D**eleted by us, **U**pdated by them - the two-letter conflict code for exactly this situation.
 
 ### Resolving it
 
@@ -257,7 +257,7 @@ Feature 1
 Feature 2
 ```
 
-The graph shows the divergence clearly: the two picked commits exist **twice**, once on each branch, with different hashes. `Feature commit 1` was never brought over — cherry-pick takes only what you name.
+The graph shows the divergence clearly: the two picked commits exist **twice**, once on each branch, with different hashes. `Feature commit 1` was never brought over - cherry-pick takes only what you name.
 
 | | original (on `feature`) | cherry-picked copy (on `main`) |
 |---|---|---|
@@ -280,11 +280,11 @@ git cherry-pick --abort           # undo everything, return to the pre-pick stat
 
 `-x` is worth knowing: it records the source hash in the message, so months later you can tell where a duplicated commit came from.
 
-### When to cherry-pick — and when not to
+### When to cherry-pick: and when not to
 
 **Use it for:** backporting a single hotfix to a release branch; recovering one commit from a branch you are otherwise abandoning; moving a commit made on the wrong branch.
 
-**Avoid it for:** moving many commits (rebase or merge instead). Cherry-picking duplicates history, and duplicated commits confuse later merges — Git sees two commits with the same content but different identities and may replay the conflict all over again.
+**Avoid it for:** moving many commits (rebase or merge instead). Cherry-picking duplicates history, and duplicated commits confuse later merges - Git sees two commits with the same content but different identities and may replay the conflict all over again.
 
 Full log: [`outputs/03-cherry-pick.txt`](outputs/03-cherry-pick.txt)
 

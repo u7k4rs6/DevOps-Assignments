@@ -4,7 +4,7 @@
 
 Solutions to the DevOps assignment set. **Each assignment is a self-contained folder** holding its write-up, its scripts and source, its raw command logs, and its screenshots.
 
-**Every command output in this repository was captured by actually running it.** Nothing is illustrative or copied from documentation. Where something failed on this machine — a missing package, a genuinely broken feature — it is reported as it happened, with the diagnosis, rather than replaced with output that would look tidier.
+**Every command output in this repository was captured by actually running it.** Nothing is illustrative or copied from documentation. Where something failed on this machine - a missing package, a genuinely broken feature - it is reported as it happened, with the diagnosis, rather than replaced with output that would look tidier.
 
 ---
 
@@ -13,9 +13,9 @@ Solutions to the DevOps assignment set. **Each assignment is a self-contained fo
 | # | Folder | What it covers |
 |---|---|---|
 | 01 | [Linux Fundamentals](Linux%20Fundamentals/) | Hard vs soft links · `adduser` vs `useradd` · `journalctl` · command cheat sheet |
-| 02 | [Shell Scripting](Shell%20Scripting/) | [`sysinfo.sh`](Shell%20Scripting/sysinfo.sh) — system report with user input and output redirection |
+| 02 | [Shell Scripting](Shell%20Scripting/) | [`sysinfo.sh`](Shell%20Scripting/sysinfo.sh) - system report with user input and output redirection |
 | 03 | [Git and GitHub](Git%20and%20GitHub/) | `git commit -a -m` vs `-m` · cherry-pick, including conflict resolution |
-| 04 | [Networking](Networking/) | [`netcheck.sh`](Networking/netcheck.sh) — layered network troubleshooting report |
+| 04 | [Networking](Networking/) | [`netcheck.sh`](Networking/netcheck.sh) - layered network troubleshooting report |
 | 05 | [Docker Fundamentals](Docker%20Fundamentals/) | Five apps, five base images, running simultaneously |
 | 06 | [Docker Images](Docker%20Images/) | Multi-stage build, measured against a single-stage control |
 | 07 | [Docker Networking](Docker%20Networking/) | Custom bridges · host network · bind mounts · overlay + Swarm |
@@ -113,7 +113,7 @@ Native Linux rather than Docker Desktop, which matters for two of the exercises:
 
 ## Selected results
 
-**Multi-stage builds, measured against a control** — same app, same `node:20-alpine` base, the only difference being the second stage:
+**Multi-stage builds, measured against a control** - same app, same `node:20-alpine` base, the only difference being the second stage:
 
 ```
 nodejs-hello        1.59GB     node:20, single stage
@@ -123,7 +123,7 @@ multi-stage-hello    200MB     node:20-alpine, multi-stage      ← 8x smaller
 
 The single-stage image also ships 228 extra `node_modules` directories and its own `Dockerfile` and `script.sh` into production. [Details →](Docker%20Images/README.md)
 
-**Network isolation, verified in both directions** — the backend joins three networks and becomes the only path between the frontend and the database:
+**Network isolation, verified in both directions** - the backend joins three networks and becomes the only path between the frontend and the database:
 
 ```
 frontend → backend    ✅  0% packet loss
@@ -151,7 +151,7 @@ Recorded rather than papered over:
 | `traceroute` is not installed on Ubuntu 26.04 | `netcheck.sh` falls back to `tracepath`, which needs no root |
 | Docker Buildx not installed, so builds use the legacy builder | Documented; multi-stage semantics are unchanged, only the log format differs |
 | Swarm ingress published port returned `000` on this host | Diagnosed (IPVS loaded, iptables backend) and reported honestly; overlay DNS, VIPs and container traffic all verified working |
-| `journalctl -u ssh.service` was empty — no sshd on this laptop | `docker.service` used as the worked example instead |
+| `journalctl -u ssh.service` was empty - no sshd on this laptop | `docker.service` used as the worked example instead |
 | Cherry-picking a commit whose parent context was missing | Turned into the more useful lesson: the `modify/delete` conflict is documented and resolved |
 
 ---

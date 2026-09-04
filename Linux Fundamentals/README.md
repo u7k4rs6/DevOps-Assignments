@@ -18,16 +18,16 @@ Codename:	resolute
 
 ---
 
-## Task 1 — Soft Links vs Hard Links
+## Task 1: Soft Links vs Hard Links
 
 ### The concept
 
 Every file on a Linux filesystem is really two things: an **inode** (the metadata + pointers to the actual data blocks) and one or more **directory entries** (names) pointing at that inode.
 
-**A hard link is just another name for the same inode.** It is not a copy and not a pointer to a name — it is a second entry in a directory that references the identical inode number. The kernel keeps a **link count** on the inode; `rm` only decrements that count, and the data blocks are freed only when the count reaches 0.
+**A hard link is just another name for the same inode.** It is not a copy and not a pointer to a name - it is a second entry in a directory that references the identical inode number. The kernel keeps a **link count** on the inode; `rm` only decrements that count, and the data blocks are freed only when the count reaches 0.
 
-- Cannot cross filesystems — inode numbers are only unique *within* one filesystem.
-- Cannot link a directory — that would let you build cycles the filesystem tools cannot safely walk.
+- Cannot cross filesystems - inode numbers are only unique *within* one filesystem.
+- Cannot link a directory - that would let you build cycles the filesystem tools cannot safely walk.
 - Editing through either name changes the same data, because there is only one set of data blocks.
 - Deleting the "original" name does not break anything; the other name still holds a reference.
 
@@ -35,7 +35,7 @@ Every file on a Linux filesystem is really two things: an **inode** (the metadat
 
 - Works across filesystems, because it stores a path, not an inode number.
 - Can point at a directory.
-- If the target is deleted or moved, the symlink still exists but now points nowhere — it becomes **dangling**.
+- If the target is deleted or moved, the symlink still exists but now points nowhere - it becomes **dangling**.
 
 ### Commands and real output
 
@@ -52,7 +52,7 @@ total 8
 1312 -rw-rw-r-- 2 utkuputku utkuputku 17 Sep  7 01:00 test.txt
 ```
 
-Read that listing carefully — it contains the whole answer:
+Read that listing carefully - it contains the whole answer:
 
 | | inode (col 1) | type | link count (col 3) | size |
 |---|---|---|---|---|
@@ -60,7 +60,7 @@ Read that listing carefully — it contains the whole answer:
 | `ptrHard`  | **1312** | `-` regular | **2** | 17 (the same content) |
 | `ptrSoft`  | 1313 | `l` symlink | 1 | 8 (`"test.txt"` is 8 characters) |
 
-`test.txt` and `ptrHard` share inode **1312** and both show a link count of **2** — one inode, two names. `ptrSoft` has its own inode and its size is exactly the length of the path string it stores.
+`test.txt` and `ptrHard` share inode **1312** and both show a link count of **2** - one inode, two names. `ptrSoft` has its own inode and its size is exactly the length of the path string it stores.
 
 ### Editing through one name changes the other
 
@@ -78,7 +78,7 @@ ptrSoft inode=1313 links=1 size=8
 
 Both names report the new size of 38 bytes, because both name the same inode.
 
-### Deleting the original — the decisive test
+### Deleting the original: the decisive test
 
 ```bash
 $ rm test.txt
@@ -95,7 +95,7 @@ $ cat ptrSoft        # dangling
 cat: ptrSoft: No such file or directory
 ```
 
-Note the link count on `ptrHard` dropped from `2` to `1` — `rm` removed a *name*, not the data. The symlink is untouched as a file but now resolves to a path that no longer exists.
+Note the link count on `ptrHard` dropped from `2` to `1` - `rm` removed a *name*, not the data. The symlink is untouched as a file but now resolves to a path that no longer exists.
 
 ### Directories
 
@@ -114,7 +114,7 @@ The kernel refuses the hard link outright; the symlink is fine.
 | | Hard link | Soft link |
 |---|---|---|
 | Inode | Same as target | Its own |
-| What it stores | Nothing — it *is* a name for the inode | A path string |
+| What it stores | Nothing - it *is* a name for the inode | A path string |
 | Across filesystems | No | Yes |
 | To a directory | No | Yes |
 | Original deleted | Still works | Broken / dangling |
@@ -125,7 +125,7 @@ Full log: [`outputs/01-links.txt`](outputs/01-links.txt)
 
 ---
 
-## Task 2 — `adduser` vs `useradd`
+## Task 2: `adduser` vs `useradd`
 
 ### The distinction
 
@@ -139,7 +139,7 @@ The demonstration below was run inside a clean `ubuntu:24.04` container so that 
 docker run --rm ubuntu:24.04 bash -c '...'
 ```
 
-### `useradd` — the low-level binary
+### `useradd`: the low-level binary
 
 ```bash
 $ type -a useradd
@@ -164,7 +164,7 @@ Flags used:
 
 | Flag | Effect |
 |---|---|
-| `-m` | Create the home directory (**without this there is none — proven below**) |
+| `-m` | Create the home directory (**without this there is none - proven below**) |
 | `-d` | Path of the home directory |
 | `-s` | Login shell |
 | `-c` | GECOS comment / full name |
@@ -181,7 +181,7 @@ ls: cannot access '/home/bare': No such file or directory
 
 `/etc/passwd` *claims* a home of `/home/bare`, but the directory was never created, the GECOS field is empty, and the shell defaulted to `/bin/sh`. This is exactly the class of half-configured account that `adduser` exists to prevent.
 
-### `adduser` — the policy wrapper
+### `adduser`: the policy wrapper
 
 ```bash
 $ type -a adduser
@@ -229,7 +229,7 @@ Those are the three files that appeared in `/home/test`.
 
 ### Which is preferred on Ubuntu?
 
-**For manual, day-to-day administration on Ubuntu: `adduser`.** It is the distro-sanctioned front end — it applies the correct UID range, creates and populates the home directory, sets permissions, and forces you to set a password. Hard to get wrong.
+**For manual, day-to-day administration on Ubuntu: `adduser`.** It is the distro-sanctioned front end - it applies the correct UID range, creates and populates the home directory, sets permissions, and forces you to set a password. Hard to get wrong.
 
 **For scripts and automation: `useradd`.** It is non-interactive by definition, has stable flags, and exists on every distribution, so the same provisioning script works on RHEL, Alpine and Debian alike. `adduser` is Debian-family only and its interactivity is a liability in a pipeline.
 
@@ -237,7 +237,7 @@ Full log: [`outputs/01-users.txt`](outputs/01-users.txt)
 
 ---
 
-## Task 3 — `journalctl`
+## Task 3: `journalctl`
 
 `journalctl` queries **systemd's journal**: a structured, indexed, binary log store that replaces hunting through plain-text files in `/var/log`. Because entries are structured, you can filter by unit, priority, boot and time range instead of writing `grep` pipelines.
 
@@ -284,7 +284,7 @@ Sep 07 00:50:16 Pottu-Lappy systemd[1]: Started docker.service - Docker Applicat
 Sep 07 01:00:47 Pottu-Lappy dockerd[3921]: level=info msg="image pulled" remote="docker.io/library/ubuntu:24.04"
 ```
 
-That last line is the `ubuntu:24.04` pull from Task 2 — the journal recorded this assignment being done.
+That last line is the `ubuntu:24.04` pull from Task 2 - the journal recorded this assignment being done.
 
 ```bash
 $ systemctl status docker --no-pager | head -12
@@ -299,7 +299,7 @@ TriggeredBy: ● docker.socket
         CPU: 2.942s
 ```
 
-### Filtering by priority — finding actual problems
+### Filtering by priority: finding actual problems
 
 ```bash
 $ journalctl -p err -b --no-pager -n 8
@@ -309,7 +309,7 @@ Sep 07 00:50:07 Pottu-Lappy systemd[1]: sysinit.target: Unable to break cycle st
 Sep 07 00:50:09 Pottu-Lappy bluetoothd[1686]: Failed to set mode: Failed (0x03)
 ```
 
-Four real defects on this laptop, surfaced by one flag — a firmware ACPI bug, a genuine systemd unit ordering cycle involving the NVIDIA services, and a Bluetooth mode failure.
+Four real defects on this laptop, surfaced by one flag - a firmware ACPI bug, a genuine systemd unit ordering cycle involving the NVIDIA services, and a Bluetooth mode failure.
 
 ### Kernel ring buffer and boot history
 
@@ -335,7 +335,7 @@ Full log: [`outputs/01-journalctl.txt`](outputs/01-journalctl.txt)
 
 ---
 
-## Task 4 — Linux Command Cheat Sheet
+## Task 4: Linux Command Cheat Sheet
 
 ```bash
 # --- navigation and files ---
