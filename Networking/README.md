@@ -293,6 +293,6 @@ Full logs: [`outputs/04-netcheck-run.txt`](outputs/04-netcheck-run.txt) · [`out
 
 ---
 
-**Previous:** [Git / GitHub](03-git-github.md) · **Next:** [Docker Fundamentals](DockerFundamentals/README.md) · [Back to index](README.md)
+**Previous:** [Git / GitHub](../Git%20and%20GitHub/README.md) · **Next:** [Docker Fundamentals](../Docker%20Fundamentals/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

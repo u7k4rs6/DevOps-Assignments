@@ -12,7 +12,7 @@ Five "Hello World" applications, five different base images, all built and run *
 | [`nginx-app`](nginx-app/) | `nginx:alpine` | 8081 | 80 | 102 MB |
 | [`apache-app`](apache-app/) | `httpd:2.4` | 8083 | 80 | 175 MB |
 
-A sixth application — a **multi-stage** Node build on port 8080 — lives in [`../DockerFiles&Images/`](../DockerFiles&Images/).
+A sixth application — a **multi-stage** Node build on port 8080 — lives in [`../Docker%20Images/`](../Docker%20Images/).
 
 ---
 
@@ -47,7 +47,7 @@ docker build -t nodejs-hello .
 docker run -d --name nodejs-container -p 3000:3000 nodejs-hello
 ```
 
-![Node.js app on port 3000](../screenshots/nodejs-app-3000.png)
+![Node.js app on port 3000](screenshots/nodejs-app-3000.png)
 
 ---
 
@@ -76,7 +76,7 @@ docker build -t python-hello .
 docker run -d --name python-container -p 5001:5000 python-hello
 ```
 
-![Python app on port 5001](../screenshots/python-app-5001.png)
+![Python app on port 5001](screenshots/python-app-5001.png)
 
 ---
 
@@ -91,7 +91,7 @@ EXPOSE 8080
 CMD ["java", "HelloWorld"]
 ```
 
-Deliberately built with **no Maven or Gradle**, using only the JDK's built-in `com.sun.net.httpserver.HttpServer`. That keeps the Dockerfile honest about what a bare JDK image actually costs: 721 MB, because the full JDK — compiler, debugger, all of it — ships in the runtime image. Compiling in one stage and copying the `.class` files into a JRE image would cut that dramatically; that is exactly the technique demonstrated in [`../DockerFiles&Images/`](../DockerFiles&Images/).
+Deliberately built with **no Maven or Gradle**, using only the JDK's built-in `com.sun.net.httpserver.HttpServer`. That keeps the Dockerfile honest about what a bare JDK image actually costs: 721 MB, because the full JDK — compiler, debugger, all of it — ships in the runtime image. Compiling in one stage and copying the `.class` files into a JRE image would cut that dramatically; that is exactly the technique demonstrated in [`../Docker%20Images/`](../Docker%20Images/).
 
 Mapped as `-p 8082:8080` because host port 8080 is already taken by the multi-stage app.
 
@@ -100,7 +100,7 @@ docker build -t java-hello .
 docker run -d --name java-container -p 8082:8080 java-hello
 ```
 
-![Java app on port 8082](../screenshots/java-app-8082.png)
+![Java app on port 8082](screenshots/java-app-8082.png)
 
 ---
 
@@ -123,7 +123,7 @@ docker build -t nginx-hello .
 docker run -d --name nginx-container -p 8081:80 nginx-hello
 ```
 
-![Nginx app on port 8081](../screenshots/nginx-app-8081.png)
+![Nginx app on port 8081](screenshots/nginx-app-8081.png)
 
 ---
 
@@ -144,13 +144,13 @@ docker build -t apache-hello .
 docker run -d --name apache-container -p 8083:80 apache-hello
 ```
 
-![Apache app on port 8083](../screenshots/apache-app-8083.png)
+![Apache app on port 8083](screenshots/apache-app-8083.png)
 
 ---
 
 ## All six running at once
 
-![docker ps with six containers](../screenshots/docker-ps.png)
+![docker ps with six containers](screenshots/docker-ps.png)
 
 ```
 $ docker ps
@@ -197,7 +197,7 @@ nginx-hello          latest   102MB
 - `eclipse-temurin:21` ships the whole JDK when only a JRE is needed to run.
 - `nginx:alpine` is Alpine + nginx, and Alpine's base is about 5 MB.
 
-The lesson: **choose the smallest base that can still run your app, and do the building somewhere else.** That is exactly what the multi-stage build in [`../DockerFiles&Images/`](../DockerFiles&Images/) does — 200 MB for the same Node.js application that costs 1.59 GB here, an **8x reduction**.
+The lesson: **choose the smallest base that can still run your app, and do the building somewhere else.** That is exactly what the multi-stage build in [`../Docker%20Images/`](../Docker%20Images/) does — 200 MB for the same Node.js application that costs 1.59 GB here, an **8x reduction**.
 
 ---
 
@@ -220,10 +220,10 @@ docker rm -f nodejs-container python-container java-container nginx-container ap
 docker rmi nodejs-hello python-hello java-hello nginx-hello apache-hello
 ```
 
-Full log: [`../outputs/docker-run-all.txt`](../outputs/docker-run-all.txt)
+Full log: [`outputs/docker-run-all.txt`](outputs/docker-run-all.txt)
 
 ---
 
-**Previous:** [Network Fundamentals](../04-network-fundamentals.md) · **Next:** [Dockerfiles & Images](../DockerFiles&Images/README.md) · [Back to index](../README.md)
+**Previous:** [Network Fundamentals](../Networking/README.md) · **Next:** [Dockerfiles & Images](../Docker%20Images/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*
