@@ -1,0 +1,43 @@
+$ touch test.txt
+$ ln test.txt ptrHard
+$ ln -s test.txt ptrSoft
+$ echo "original content" > test.txt
+
+$ ls -li
+total 8
+1312 -rw-rw-r-- 2 utkuputku utkuputku 17 Sep  7 01:00 ptrHard
+1313 lrwxrwxrwx 1 utkuputku utkuputku  8 Sep  7 01:00 ptrSoft -> test.txt
+1312 -rw-rw-r-- 2 utkuputku utkuputku 17 Sep  7 01:00 test.txt
+
+$ cat ptrHard
+original content
+$ cat ptrSoft
+original content
+
+$ echo "edited via hard link" >> ptrHard
+$ cat test.txt
+original content
+edited via hard link
+
+$ stat -c "%n inode=%i links=%h size=%s" test.txt ptrHard ptrSoft
+test.txt inode=1312 links=2 size=38
+ptrHard inode=1312 links=2 size=38
+ptrSoft inode=1313 links=1 size=8
+
+--- deleting the original ---
+$ rm test.txt
+$ ls -li
+total 4
+1312 -rw-rw-r-- 1 utkuputku utkuputku 38 Sep  7 01:00 ptrHard
+1313 lrwxrwxrwx 1 utkuputku utkuputku  8 Sep  7 01:00 ptrSoft -> test.txt
+
+$ cat ptrHard        # still works
+original content
+edited via hard link
+$ cat ptrSoft        # dangling
+cat: ptrSoft: No such file or directory
+
+$ ln /home/utkuputku ptrDirHard   # hard-linking a directory
+ln: /home/utkuputku: hard link not allowed for directory
+$ ln -s /home/utkuputku ptrDirSoft && ls -ld ptrDirSoft
+lrwxrwxrwx 1 utkuputku utkuputku 15 Sep  7 01:00 ptrDirSoft -> /home/utkuputku

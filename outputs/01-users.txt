@@ -1,0 +1,71 @@
+===== useradd (low-level binary) =====
+$ type -a useradd
+useradd is /usr/sbin/useradd
+useradd is /sbin/useradd
+
+$ file -b /usr/sbin/useradd
+ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a0000899fb3c31347e08f25c681dab585afebf36, for GNU/Linux 3.2.0, stripped
+
+$ useradd -m -d /home/john -s /bin/bash -c John Doe john
+
+$ id john
+uid=1001(john) gid=1001(john) groups=1001(john)
+
+$ grep ^john /etc/passwd
+john:x:1001:1001:John Doe:/home/john:/bin/bash
+
+$ ls -ld /home/john
+drwxr-x--- 2 john john 4096 Sep  6 19:31 /home/john
+
+$ ls -A /home/john
+.bash_logout
+.bashrc
+.profile
+
+===== adduser (Perl wrapper, run non-interactively) =====
+$ type -a adduser
+adduser is /usr/sbin/adduser
+adduser is /sbin/adduser
+
+$ file -b /usr/sbin/adduser
+Perl script text executable
+
+$ adduser --gecos Test User --disabled-password test
+info: Adding user `test' ...
+info: Selecting UID/GID from range 1000 to 59999 ...
+info: Adding new group `test' (1002) ...
+info: Adding new user `test' (1002) with group `test (1002)' ...
+info: Creating home directory `/home/test' ...
+info: Copying files from `/etc/skel' ...
+info: Adding new user `test' to supplemental / extra groups `users' ...
+info: Adding user `test' to group `users' ...
+
+$ id test
+uid=1002(test) gid=1002(test) groups=1002(test),100(users)
+
+$ grep ^test /etc/passwd
+test:x:1002:1002:Test User,,,:/home/test:/bin/bash
+
+$ ls -ld /home/test
+drwxr-x--- 2 test test 4096 Sep  6 19:31 /home/test
+
+$ ls -A /home/test
+.bash_logout
+.bashrc
+.profile
+
+===== /etc/skel: what adduser copies in =====
+$ ls -A /etc/skel
+.bash_logout
+.bashrc
+.profile
+
+===== useradd WITHOUT -m : no home directory =====
+$ useradd bare
+
+$ grep ^bare /etc/passwd
+bare:x:1003:1003::/home/bare:/bin/sh
+
+$ ls -ld /home/bare
+ls: cannot access '/home/bare': No such file or directory
+
