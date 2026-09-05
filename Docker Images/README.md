@@ -87,7 +87,7 @@ Successfully built 0b2f2cd7edf4
 Successfully tagged multi-stage-hello:latest
 ```
 
-![Multi-stage build stages and resulting sizes](../screenshots/multistage-build-stages.png)
+![Multi-stage build stages and resulting sizes](screenshots/multistage-build-stages.png)
 
 **Step 6 is the whole point.** A second `FROM` on the same base image starts a brand-new filesystem. The 405 packages installed at step 4 exist only in the builder stage; step 9 installs 74 into the clean stage. `COPY --from=builder` at steps 8 and 10 is the only bridge between them.
 
@@ -113,13 +113,13 @@ Verified: the application displays **Hello World from Docker multi-stage build**
 
 ### Application running successfully
 
-![Application running on port 8080](../screenshots/multistage-app-8080.png)
+![Application running on port 8080](screenshots/multistage-app-8080.png)
 
 Browser at `localhost:8080` displaying *Hello World from Docker multi-stage build*.
 
 ### `docker ps` showing the container on port 8080
 
-![docker ps output](../screenshots/docker-ps.png)
+![docker ps output](screenshots/docker-ps.png)
 
 ```
 CONTAINER ID   IMAGE               STATUS              PORTS                                         NAMES
@@ -188,7 +188,7 @@ That second point is a **security** argument as much as a size one. Every file i
 
 ### Against the plain `node:20` build
 
-The same application built on the full `node:20` base lives in [`../DockerFundamentals/nodejs-app/`](../DockerFundamentals/nodejs-app/):
+The same application built on the full `node:20` base lives in [`../Docker%20Fundamentals/nodejs-app/`](../Docker%20Fundamentals/nodejs-app/):
 
 ```
 nodejs-hello        latest   1.59GB     <- node:20, single stage
@@ -236,7 +236,7 @@ nginx       (8081): <h1>Hello World from Nginx!</h1>
 apache      (8083): <h1>Hello World from Apache!</h1>
 ```
 
-Sources for the other five are in [`../DockerFundamentals/`](../DockerFundamentals/), which also documents the port-conflict resolutions.
+Sources for the other five are in [`../Docker%20Fundamentals/`](../Docker%20Fundamentals/), which also documents the port-conflict resolutions.
 
 ---
 
@@ -261,10 +261,10 @@ docker rm -f multi-stage-container
 docker rmi multi-stage-hello single-stage-hello
 ```
 
-Full log: [`../outputs/docker-builds.txt`](../outputs/docker-builds.txt)
+Full log: [`outputs/docker-builds.txt`](outputs/docker-builds.txt)
 
 ---
 
-**Previous:** [Docker Fundamentals](../DockerFundamentals/README.md) · **Next:** [Docker Networking & Volumes](../Docker%20Network/README.md) · [Back to index](../README.md)
+**Previous:** [Docker Fundamentals](../Docker%20Fundamentals/README.md) · **Next:** [Docker Networking & Volumes](../Docker%20Networking/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

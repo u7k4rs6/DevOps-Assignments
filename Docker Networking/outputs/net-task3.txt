@@ -1,11 +1,9 @@
 $ pwd
-/home/utkuputku/Desktop/Devops-ass/Docker Network
-$ cat bind-mount/index.html | grep -o "<h1>.*</h1>"
-<h1>Hello students</h1>
+/home/utkuputku/Desktop/Devops-ass/Docker Networking
 
 =========== Step 1: mount the host folder as nginx web root ===========
 $ docker run -d --name nginx-bind -v "$(pwd)/bind-mount":/usr/share/nginx/html -p 8090:80 nginx:alpine
-fcd8f46f859fce68763ac99852250cdd93dbcdf807d4fb6d7980549cb8226835
+84dc09b5326c7e453c7c4b6c3ae4b9c910a53a6c47f9f995795617f9aed40973
 
 $ docker ps --filter name=nginx-bind --format "table {{.Names}}	{{.Status}}	{{.Ports}}"
 NAMES        STATUS         PORTS
@@ -16,13 +14,13 @@ $ curl -s http://localhost:8090 | grep -o "<h1>.*</h1>"
 <h1>Hello students</h1>
 
 =========== Step 3: the mount really is the same directory ===========
-$ docker inspect nginx-bind --format '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}} rw={{.RW}}{{end}}'
-bind  /home/utkuputku/Desktop/Devops-ass/Docker Network/bind-mount -> /usr/share/nginx/html  rw=true
+$ docker inspect nginx-bind --format '{{range .Mounts}}{{.Type}}  {{.Source}} -> {{.Destination}}  rw={{.RW}}{{end}}'
+bind  /home/utkuputku/Desktop/Devops-ass/Docker Networking/bind-mount -> /usr/share/nginx/html  rw=true
 
 $ ls -i bind-mount/index.html                       # inode on the host
-8263287 bind-mount/index.html
+8284778 bind-mount/index.html
 $ docker exec nginx-bind ls -i /usr/share/nginx/html/index.html   # inode in the container
-8263287 /usr/share/nginx/html/index.html
+8284778 /usr/share/nginx/html/index.html
   ^ same inode number: it is one file, not a copy
 
 =========== Step 4: edit on the host, re-check WITHOUT restarting ===========
@@ -38,11 +36,11 @@ $ tail -1 bind-mount/index.html   # visible on the host immediately
 
 =========== Step 6: contrast - a COPY-based image does NOT update ===========
 $ docker run -d --name nginx-copy -p 8091:80 nginx-hello   # index.html baked in with COPY
-44c997b258ca9520717c6dcc54c124a10ac91bb860691cf0b761b6bebdc01ef9
-$ sed -i "s|Hello World from Nginx!|EDITED ON HOST|" ../DockerFundamentals/nginx-app/index.html
-$ grep -o "<h1>.*</h1>" ../DockerFundamentals/nginx-app/index.html   # host file changed
+87d322000fab46733e814bc13685261ac636618ff00f5308b6dd139492bf010f
+$ sed -i "s|Hello World from Nginx!|EDITED ON HOST|" "../Docker Fundamentals/nginx-app/index.html"
+$ grep -o "<h1>.*</h1>" "../Docker Fundamentals/nginx-app/index.html"   # host file changed
 <h1>EDITED ON HOST</h1>
-$ curl -s http://localhost:8091 | grep -o "<h1>.*</h1>"                # container did NOT change
+$ curl -s http://localhost:8091 | grep -o "<h1>.*</h1>"                  # container did NOT change
 <h1>Hello World from Nginx!</h1>
   ^ COPY snapshots at build time; only a rebuild would pick this up
 --- restoring the source file ---

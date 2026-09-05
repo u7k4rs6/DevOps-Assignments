@@ -290,6 +290,6 @@ Full log: [`outputs/03-cherry-pick.txt`](outputs/03-cherry-pick.txt)
 
 ---
 
-**Previous:** [Shell Scripting](02-shell-scripting.md) · **Next:** [Network Fundamentals](04-network-fundamentals.md) · [Back to index](README.md)
+**Previous:** [Shell Scripting](../Shell%20Scripting/README.md) · **Next:** [Network Fundamentals](../Networking/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

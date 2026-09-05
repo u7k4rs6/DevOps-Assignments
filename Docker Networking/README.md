@@ -99,7 +99,7 @@ That is the whole mechanism: a container gets one virtual interface per network 
 
 ### Step 5 — The connectivity matrix
 
-![Task 1 connectivity matrix](../screenshots/net-task1-connectivity.png)
+![Task 1 connectivity matrix](screenshots/net-task1-connectivity.png)
 
 ```bash
 $ docker exec frontend ping -c 2 backend        # shared: frontend-net
@@ -184,7 +184,7 @@ database-net   backend database
 
 `backend` appears in all three. `frontend` and `database` never share a row — the isolation, stated structurally.
 
-Full log: [`../outputs/net-task1.txt`](../outputs/net-task1.txt)
+Full log: [`outputs/net-task1.txt`](outputs/net-task1.txt)
 
 ---
 
@@ -215,7 +215,7 @@ $ ss -ltnp | grep ":80 "
 LISTEN 0      511                *:80               *:*
 ```
 
-![Apache on the host network, port 80](../screenshots/apache-host-network-80.png)
+![Apache on the host network, port 80](screenshots/apache-host-network-80.png)
 
 httpd is listening on the **host's** port 80 itself.
 
@@ -285,7 +285,7 @@ Use `host` for latency-sensitive workloads or tools that need to see the host's 
 
 > **Portability note.** `--network host` shares the *Linux* host's network stack. Docker Desktop on macOS or Windows runs containers inside a hidden Linux VM, so the container would bind port 80 **inside that VM**, and `curl http://localhost:80` from the Mac would return `connection refused`. The results above are from native Linux, where it behaves as designed.
 
-Full log: [`../outputs/net-task2.txt`](../outputs/net-task2.txt)
+Full log: [`outputs/net-task2.txt`](outputs/net-task2.txt)
 
 ---
 
@@ -298,7 +298,7 @@ Full log: [`../outputs/net-task2.txt`](../outputs/net-task2.txt)
 ### Step 2 — Mount it as nginx's web root
 
 ```bash
-cd "Docker Network"
+cd "Docker Networking"
 docker run -d --name nginx-bind \
   -v "$(pwd)/bind-mount":/usr/share/nginx/html \
   -p 8090:80 \
@@ -313,22 +313,22 @@ $ curl -s http://localhost:8090 | grep -o "<h1>.*</h1>"
 <h1>Hello students</h1>
 ```
 
-![Bind-mounted page before the edit](../screenshots/bind-mount-before.png)
+![Bind-mounted page before the edit](screenshots/bind-mount-before.png)
 
 ### Step 3 — Proof it is the same file, not a copy
 
 ```bash
 $ docker inspect nginx-bind --format '{{range .Mounts}}{{.Type}}  {{.Source}} -> {{.Destination}}  rw={{.RW}}{{end}}'
-bind  /home/utkuputku/Desktop/Devops-ass/Docker Network/bind-mount -> /usr/share/nginx/html  rw=true
+bind  /home/utkuputku/Desktop/Devops-ass/Docker Networking/bind-mount -> /usr/share/nginx/html  rw=true
 
 $ ls -i bind-mount/index.html
-8263287 bind-mount/index.html
+8284778 bind-mount/index.html
 
 $ docker exec nginx-bind ls -i /usr/share/nginx/html/index.html
-8263287 /usr/share/nginx/html/index.html
+8284778 /usr/share/nginx/html/index.html
 ```
 
-**The same inode number, 8263287, inside and outside the container.** Not a copy, not a sync — one file, visible through two paths. That single fact explains everything else about bind mounts.
+**The same inode number, 8284778, inside and outside the container.** Not a copy, not a sync — one file, visible through two paths. That single fact explains everything else about bind mounts.
 
 ### Step 4 — Edit on the host, no restart
 
@@ -338,7 +338,7 @@ $ curl -s http://localhost:8090 | grep -o "<h1>.*</h1>"
 <h1>Hello students - updated live!</h1>
 ```
 
-![Bind-mounted page after the edit — no restart](../screenshots/bind-mount-after.png)
+![Bind-mounted page after the edit — no restart](screenshots/bind-mount-after.png)
 
 **No `docker restart`, no `docker build`, no `docker cp`.** The change is live because the container is reading the same inode on your disk. This is why bind mounts are the standard tool for local development.
 
@@ -354,13 +354,13 @@ A write from inside the container appears on the host immediately. Worth knowing
 
 ### Step 6 — The contrast with `COPY`
 
-The nginx image in [`../DockerFundamentals/nginx-app/`](../DockerFundamentals/nginx-app/) bakes its `index.html` in with `COPY`. Same edit, different outcome:
+The nginx image in [`../Docker%20Fundamentals/nginx-app/`](../Docker%20Fundamentals/nginx-app/) bakes its `index.html` in with `COPY`. Same edit, different outcome:
 
 ```bash
 $ docker run -d --name nginx-copy -p 8091:80 nginx-hello
-$ sed -i 's|Hello World from Nginx!|EDITED ON HOST|' ../DockerFundamentals/nginx-app/index.html
+$ sed -i 's|Hello World from Nginx!|EDITED ON HOST|' ../Docker%20Fundamentals/nginx-app/index.html
 
-$ grep -o "<h1>.*</h1>" ../DockerFundamentals/nginx-app/index.html   # host file changed
+$ grep -o "<h1>.*</h1>" ../Docker%20Fundamentals/nginx-app/index.html   # host file changed
 <h1>EDITED ON HOST</h1>
 
 $ curl -s http://localhost:8091 | grep -o "<h1>.*</h1>"              # container did NOT
@@ -376,7 +376,7 @@ $ curl -s http://localhost:8091 | grep -o "<h1>.*</h1>"              # container
 | Image is self-contained | Yes | No — depends on the host path |
 | Right for | Production images | Local development |
 
-Full log: [`../outputs/net-task3.txt`](../outputs/net-task3.txt)
+Full log: [`outputs/net-task3.txt`](outputs/net-task3.txt)
 
 ---
 
@@ -406,7 +406,7 @@ A `bridge` network exists on **one** host. An **overlay** network spans **many h
 
 ### Overlay requires Swarm — demonstrated
 
-![Overlay network requires swarm](../screenshots/net-task4-overlay.png)
+![Overlay network requires swarm](screenshots/net-task4-overlay.png)
 
 ```bash
 $ docker network create -d overlay my-overlay        # before swarm init
@@ -544,7 +544,7 @@ Swarm: inactive
 | Encryption option | No | No | Yes (IPSec) |
 | Typical use | Local multi-container app | Performance / host tools | Production cluster |
 
-Full logs: [`../outputs/net-task4.txt`](../outputs/net-task4.txt) · [`../outputs/net-task4-ingress.txt`](../outputs/net-task4-ingress.txt)
+Full logs: [`outputs/net-task4.txt`](outputs/net-task4.txt) · [`outputs/net-task4-ingress.txt`](outputs/net-task4-ingress.txt)
 
 ---
 
@@ -552,11 +552,11 @@ Full logs: [`../outputs/net-task4.txt`](../outputs/net-task4.txt) · [`../output
 
 | Exercise | Screenshot |
 |---|---|
-| Task 1 — connectivity matrix and DNS proof | [`net-task1-connectivity.png`](../screenshots/net-task1-connectivity.png) |
-| Task 2 — Apache on the host network, port 80 | [`apache-host-network-80.png`](../screenshots/apache-host-network-80.png) |
-| Task 3 — "Hello students" before the edit | [`bind-mount-before.png`](../screenshots/bind-mount-before.png) |
-| Task 3 — same page after a live host edit | [`bind-mount-after.png`](../screenshots/bind-mount-after.png) |
-| Task 4 — overlay network with `swarm` scope | [`net-task4-overlay.png`](../screenshots/net-task4-overlay.png) |
+| Task 1 — connectivity matrix and DNS proof | [`net-task1-connectivity.png`](screenshots/net-task1-connectivity.png) |
+| Task 2 — Apache on the host network, port 80 | [`apache-host-network-80.png`](screenshots/apache-host-network-80.png) |
+| Task 3 — "Hello students" before the edit | [`bind-mount-before.png`](screenshots/bind-mount-before.png) |
+| Task 3 — same page after a live host edit | [`bind-mount-after.png`](screenshots/bind-mount-after.png) |
+| Task 4 — overlay network with `swarm` scope | [`net-task4-overlay.png`](screenshots/net-task4-overlay.png) |
 
 ---
 
@@ -569,6 +569,6 @@ docker network rm frontend-net backend-net database-net
 
 ---
 
-**Previous:** [Dockerfiles & Images](../DockerFiles&Images/README.md) · [Back to index](../README.md)
+**Previous:** [Dockerfiles & Images](../Docker%20Images/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

@@ -447,6 +447,6 @@ Full log: [`outputs/01-cheatsheet.txt`](outputs/01-cheatsheet.txt)
 
 ---
 
-**Next:** [Shell Scripting](02-shell-scripting.md) · [Back to index](README.md)
+**Next:** [Shell Scripting](../Shell%20Scripting/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

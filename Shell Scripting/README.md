@@ -197,6 +197,6 @@ Full log: [`outputs/02-sysinfo-run.txt`](outputs/02-sysinfo-run.txt)
 
 ---
 
-**Previous:** [Linux Fundamentals](01-linux-fundamentals.md) · **Next:** [Git / GitHub](03-git-github.md) · [Back to index](README.md)
+**Previous:** [Linux Fundamentals](../Linux%20Fundamentals/README.md) · **Next:** [Git / GitHub](../Git%20and%20GitHub/README.md) · [Back to index](../README.md)
 
 *Utkarsh Bahuguna · 10161*

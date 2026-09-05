@@ -2,56 +2,76 @@
 
 **Name:** Utkarsh Bahuguna &nbsp;&nbsp;**Enrollment Number:** 10161
 
-Solutions to the DevOps assignment set: Linux fundamentals, shell scripting, Git, network fundamentals, and three Docker assignments.
+Solutions to the DevOps assignment set. **Each assignment is a self-contained folder** holding its write-up, its scripts and source, its raw command logs, and its screenshots.
 
 **Every command output in this repository was captured by actually running it.** Nothing is illustrative or copied from documentation. Where something failed on this machine — a missing package, a genuinely broken feature — it is reported as it happened, with the diagnosis, rather than replaced with output that would look tidier.
 
 ---
 
-## Contents
+## Assignments
 
-| # | Assignment | Deliverables |
+| # | Folder | What it covers |
 |---|---|---|
-| 01 | [Linux Fundamentals](01-linux-fundamentals.md) | Hard vs soft links · `adduser` vs `useradd` · `journalctl` · command cheat sheet |
-| 02 | [Shell Scripting](02-shell-scripting.md) | [`sysinfo.sh`](sysinfo.sh) — system report with user input and output redirection |
-| 03 | [Git / GitHub](03-git-github.md) | `git commit -a -m` vs `-m` · cherry-pick, including conflict resolution |
-| 04 | [Network Fundamentals](04-network-fundamentals.md) | [`netcheck.sh`](netcheck.sh) — layered network troubleshooting report |
-| 05 | [Docker Fundamentals](DockerFundamentals/README.md) | Five apps, five base images, running simultaneously |
-| 06 | [Dockerfiles & Images](DockerFiles&Images/README.md) | Multi-stage build, measured against a single-stage control |
-| 07 | [Docker Networking & Volumes](Docker%20Network/README.md) | Custom bridges · host network · bind mounts · overlay + Swarm |
+| 01 | [Linux Fundamentals](Linux%20Fundamentals/) | Hard vs soft links · `adduser` vs `useradd` · `journalctl` · command cheat sheet |
+| 02 | [Shell Scripting](Shell%20Scripting/) | [`sysinfo.sh`](Shell%20Scripting/sysinfo.sh) — system report with user input and output redirection |
+| 03 | [Git and GitHub](Git%20and%20GitHub/) | `git commit -a -m` vs `-m` · cherry-pick, including conflict resolution |
+| 04 | [Networking](Networking/) | [`netcheck.sh`](Networking/netcheck.sh) — layered network troubleshooting report |
+| 05 | [Docker Fundamentals](Docker%20Fundamentals/) | Five apps, five base images, running simultaneously |
+| 06 | [Docker Images](Docker%20Images/) | Multi-stage build, measured against a single-stage control |
+| 07 | [Docker Networking](Docker%20Networking/) | Custom bridges · host network · bind mounts · overlay + Swarm |
 
 ---
 
 ## Repository layout
 
+Every folder follows the same shape: a `README.md` write-up, the source it documents, an `outputs/` directory of raw unedited command logs, and `screenshots/` where the assignment calls for them.
+
 ```
 .
-├── 01-linux-fundamentals.md
-├── 02-shell-scripting.md          → sysinfo.sh
-├── 03-git-github.md
-├── 04-network-fundamentals.md     → netcheck.sh
-├── sysinfo.sh
-├── netcheck.sh
+├── Linux Fundamentals/
+│   ├── README.md
+│   └── outputs/                   # links, users, journalctl, cheat sheet logs
 │
-├── DockerFundamentals/            # five stacks, one Dockerfile each
+├── Shell Scripting/
+│   ├── README.md
+│   ├── sysinfo.sh
+│   └── outputs/
+│
+├── Git and GitHub/
+│   ├── README.md
+│   └── outputs/                   # commit-flag cases, cherry-pick transcript
+│
+├── Networking/
+│   ├── README.md
+│   ├── netcheck.sh
+│   └── outputs/                   # success and NXDOMAIN failure reports
+│
+├── Docker Fundamentals/           # five stacks, one Dockerfile each
+│   ├── README.md
 │   ├── nodejs-app/                #   node:20            → host 3000
 │   ├── python-app/                #   python:3.12        → host 5001
 │   ├── java-app/                  #   eclipse-temurin:21 → host 8082
 │   ├── nginx-app/                 #   nginx:alpine       → host 8081
-│   └── apache-app/                #   httpd:2.4          → host 8083
+│   ├── apache-app/                #   httpd:2.4          → host 8083
+│   ├── outputs/
+│   └── screenshots/
 │
-├── DockerFiles&Images/            # multi-stage build     → host 8080
+├── Docker Images/                 # multi-stage build     → host 8080
+│   ├── README.md
 │   ├── Dockerfile                 #   two stages
-│   └── Dockerfile.single-stage    #   control, for the size comparison
+│   ├── Dockerfile.single-stage    #   control, for the size comparison
+│   ├── server.js  package.json
+│   ├── outputs/
+│   └── screenshots/
 │
-├── Docker Network/                # networking & volumes
-│   └── bind-mount/index.html      #   mounted live into nginx
-│
-├── screenshots/                   # browser + terminal evidence
-└── outputs/                       # raw, unedited command logs
+└── Docker Networking/             # networking & volumes
+    ├── README.md
+    ├── bind-mount/index.html      #   mounted live into nginx
+    ├── outputs/
+    └── screenshots/
 ```
 
-Each app directory contains a `script.sh` that builds and runs it in one step.
+Each Docker app directory also contains a `script.sh` that builds and runs it in one step.
 
 ---
 
@@ -78,7 +98,7 @@ Native Linux rather than Docker Desktop, which matters for two of the exercises:
 
 | Port | Service |
 |---|---|
-| 80 | Apache on the **host** network (Docker Network, Task 2) |
+| 80 | Apache on the **host** network (Docker Networking, Task 2) |
 | 3000 | Node.js app (`node:20`) |
 | 5001 | Python Flask app (container port 5000) |
 | 8080 | **Multi-stage** Node app |
@@ -101,7 +121,7 @@ single-stage-hello   414MB     node:20-alpine, single stage
 multi-stage-hello    200MB     node:20-alpine, multi-stage      ← 8x smaller
 ```
 
-The single-stage image also ships 228 extra `node_modules` directories and its own `Dockerfile` and `script.sh` into production. [Details →](DockerFiles&Images/README.md)
+The single-stage image also ships 228 extra `node_modules` directories and its own `Dockerfile` and `script.sh` into production. [Details →](Docker%20Images/README.md)
 
 **Network isolation, verified in both directions** — the backend joins three networks and becomes the only path between the frontend and the database:
 
@@ -111,13 +131,13 @@ backend  → database   ✅  0% packet loss
 frontend → database   ❌  ping: bad address 'database'
 ```
 
-The failure is the point. [Details →](Docker%20Network/README.md)
+The failure is the point. [Details →](Docker%20Networking/README.md)
 
 **Bind mounts share an inode, they do not copy:**
 
 ```
-$ ls -i bind-mount/index.html                                   → 8263287
-$ docker exec nginx-bind ls -i /usr/share/nginx/html/index.html → 8263287
+$ ls -i bind-mount/index.html                                   → 8284778
+$ docker exec nginx-bind ls -i /usr/share/nginx/html/index.html → 8284778
 ```
 
 ---
