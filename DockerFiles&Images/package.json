@@ -1,0 +1,16 @@
+{
+  "name": "docker-multi-stage-app",
+  "version": "1.0.0",
+  "description": "Hello World app built with a Docker multi-stage build",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0"
+  }
+}
