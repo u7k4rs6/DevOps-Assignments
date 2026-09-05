@@ -1,0 +1,85 @@
+$ journalctl --version
+systemd 259 (259.5-0ubuntu3.4)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +IPE +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +KMOD +LIBCRYPTSETUP +LIBCRYPTSETUP_PLUGINS +LIBFDISK +PCRE2 +PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD +BPF_FRAMEWORK +BTF -XKBCOMMON -UTMP +SYSVINIT +LIBARCHIVE
+
+$ journalctl --disk-usage
+Archived and active journals take up 1.7G in the file system.
+
+$ journalctl -b --no-pager -n 8
+Sep 07 01:01:09 Pottu-Lappy warp-svc[1735]:  changes=NetworkChanges([NonPrimaryInterfacesChanged { from: [InterfaceName("br-99311fb8c732"), InterfaceName("docker0"), InterfaceName("enp7s0"), InterfaceName("veth517a74e"), InterfaceName("veth61dddb2"), InterfaceName("veth9032307"), InterfaceName("vethb1694d2"), InterfaceName("vethd7f9e65")], to: [InterfaceName("br-99311fb8c732"), InterfaceName("docker0"), InterfaceName("enp7s0"), InterfaceName("veth61dddb2"), InterfaceName("veth9032307"), InterfaceName("vethd7f9e65")] }])
+Sep 07 01:01:09 Pottu-Lappy warp-svc[1735]: 2026-09-06T19:31:09.296Z DEBUG update_network_info: actor_device_state::collector: close time.busy=2.29ms time.idle=11.7µs
+Sep 07 01:01:09 Pottu-Lappy warp-svc[1735]: 2026-09-06T19:31:09.296Z DEBUG utilities::tokio::select_watcher: Entering: [main loop] arm="main_loop_compat_rx"
+Sep 07 01:01:09 Pottu-Lappy warp-svc[1735]: 2026-09-06T19:31:09.297Z DEBUG main_loop:handle_update{update=NetworkInfoChanged("NonPrimaryInterfacesChanged", ..)}: warp::warp_service::actor_compat: close time.busy=606µs time.idle=15.1µs
+Sep 07 01:01:09 Pottu-Lappy warp-svc[1735]: 2026-09-06T19:31:09.297Z DEBUG utilities::tokio::select_watcher: Exiting: [main loop] arm="main_loop_compat_rx" elapsed=759.056µs
+Sep 07 01:01:09 Pottu-Lappy systemd[1]: run-docker-netns-ef3725f1f205.mount: Deactivated successfully.
+Sep 07 01:01:09 Pottu-Lappy systemd[1]: var-lib-docker-rootfs-overlayfs-14ffd59cc7c8f0240c964907be364445cf792109bb567f52edc9b52a1f77453c.mount: Deactivated successfully.
+Sep 07 01:01:10 Pottu-Lappy warp-svc[1735]: 2026-09-06T19:31:10.127Z DEBUG actor_connectivity::connectivity: Routes changed: 53 in the last 30 seconds
+
+$ journalctl -p err -b --no-pager -n 8
+Sep 07 00:50:02 Pottu-Lappy kernel: ACPI BIOS Error (bug): Failure creating named object [\_SB.PC00.XHCI.RHUB.SS10._PLD], AE_ALREADY_EXISTS (20251212/dswload2-326)
+Sep 07 00:50:02 Pottu-Lappy kernel: ACPI Error: AE_ALREADY_EXISTS, During name lookup/catalog (20251212/psobject-220)
+Sep 07 00:50:05 Pottu-Lappy kernel: 
+Sep 07 00:50:07 Pottu-Lappy systemd[1]: sysinit.target: Found ordering cycle: systemd-backlight@backlight:nvidia_0.service/start after nvidia-persistenced.service/start after basic.target/start after sockets.target/start after apport-forward.socket/start after sysinit.target/start - after systemd-backlight@backlight:nvidia_0.service
+Sep 07 00:50:07 Pottu-Lappy systemd[1]: sysinit.target: Unable to break cycle starting with sysinit.target/start
+Sep 07 00:50:09 Pottu-Lappy bluetoothd[1686]: Failed to set mode: Failed (0x03)
+Sep 07 00:52:03 Pottu-Lappy gdm-password][5063]: gkr-pam: unable to locate daemon control file
+Sep 07 00:52:05 Pottu-Lappy systemd[5348]: Failed to start app-gnome-ubuntu\x2dreport\x2don\x2dupgrade-5971.scope - Application launched by gnome-session-service.
+
+$ journalctl -k --no-pager -n 6
+Sep 07 01:01:09 Pottu-Lappy kernel: docker0: port 1(vethb1694d2) entered disabled state
+Sep 07 01:01:09 Pottu-Lappy kernel: veth517a74e: renamed from eth0
+Sep 07 01:01:09 Pottu-Lappy kernel: docker0: port 1(vethb1694d2) entered disabled state
+Sep 07 01:01:09 Pottu-Lappy kernel: vethb1694d2 (unregistering): left allmulticast mode
+Sep 07 01:01:09 Pottu-Lappy kernel: vethb1694d2 (unregistering): left promiscuous mode
+Sep 07 01:01:09 Pottu-Lappy kernel: docker0: port 1(vethb1694d2) entered disabled state
+
+$ journalctl --list-boots --no-pager | tail -5
+  -4 623d0f66d5854233a5116589961464cd Fri 2026-09-04 21:47:02 IST Sat 2026-09-05 04:02:36 IST
+  -3 217a2f0be5d24a75a5665ffce5740348 Sat 2026-09-05 15:39:56 IST Sat 2026-09-05 19:32:12 IST
+  -2 af4e58d7f5104bcfa6fbe5b5ba6d587d Sat 2026-09-05 22:51:35 IST Sun 2026-09-06 06:20:48 IST
+  -1 87a453db0e8b49cbbf04d13a03a6aa72 Sun 2026-09-06 09:07:49 IST Sun 2026-09-06 17:24:01 IST
+   0 f9022c5b9dc04d99b03696d110723a80 Mon 2026-09-07 00:50:02 IST Mon 2026-09-07 01:01:10 IST
+
+$ systemctl list-units --type=service --state=running --no-pager | head -12
+  UNIT                           LOAD   ACTIVE SUB     DESCRIPTION
+  accounts-daemon.service        loaded active running Accounts Service
+  avahi-daemon.service           loaded active running Avahi mDNS/DNS-SD Stack
+  bluetooth.service              loaded active running Bluetooth service
+  chrony.service                 loaded active running chrony, an NTP client/server
+  colord.service                 loaded active running Manage, Install and Generate Color Profiles
+  containerd.service             loaded active running containerd container runtime
+  cron.service                   loaded active running Regular background program processing daemon
+  cups-browsed.service           loaded active running Make remote CUPS printers available locally
+  cups.service                   loaded active running CUPS Scheduler
+  dbus.service                   loaded active running D-Bus System Message Bus
+  docker.service                 loaded active running Docker Application Container Engine
+
+$ journalctl -u docker.service -b --no-pager -n 10
+Sep 07 00:50:16 Pottu-Lappy dockerd[3921]: time="2026-09-07T00:50:16.677517150+05:30" level=info msg="Initializing buildkit"
+Sep 07 00:50:16 Pottu-Lappy dockerd[3921]: time="2026-09-07T00:50:16.699427630+05:30" level=info msg="Completed buildkit initialization"
+Sep 07 00:50:16 Pottu-Lappy dockerd[3921]: time="2026-09-07T00:50:16.708002225+05:30" level=info msg="Daemon has completed initialization"
+Sep 07 00:50:16 Pottu-Lappy dockerd[3921]: time="2026-09-07T00:50:16.708062168+05:30" level=info msg="API listen on /run/docker.sock"
+Sep 07 00:50:16 Pottu-Lappy systemd[1]: Started docker.service - Docker Application Container Engine.
+Sep 07 01:00:47 Pottu-Lappy dockerd[3921]: time="2026-09-07T01:00:47.489395431+05:30" level=info msg="image pulled" digest="sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517" remote="docker.io/library/ubuntu:24.04"
+Sep 07 01:00:47 Pottu-Lappy dockerd[3921]: time="2026-09-07T01:00:47.814203257+05:30" level=info msg="sbJoin: gwep4 ''->'50fdbb6008ef', gwep6 ''->''" eid=50fdbb6008ef ep=objective_hellman net=bridge nid=0624d67caa89
+Sep 07 01:00:47 Pottu-Lappy dockerd[3921]: time="2026-09-07T01:00:47.935633918+05:30" level=info msg="ignoring event" container=f93bd04461192fe92e34d133d621dd2d635552943ce9bce8850cfb3b302882e2 module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+Sep 07 01:00:57 Pottu-Lappy dockerd[3921]: time="2026-09-07T01:00:57.698728584+05:30" level=info msg="sbJoin: gwep4 ''->'f6fc3ef6dbd9', gwep6 ''->''" eid=f6fc3ef6dbd9 ep=zealous_dewdney net=bridge nid=0624d67caa89
+Sep 07 01:01:09 Pottu-Lappy dockerd[3921]: time="2026-09-07T01:01:09.200445516+05:30" level=info msg="ignoring event" container=14ffd59cc7c8f0240c964907be364445cf792109bb567f52edc9b52a1f77453c module=libcontainerd namespace=moby topic=/tasks/delete type="*events.TaskDelete"
+
+$ systemctl status docker --no-pager | head -12
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-09-07 00:50:16 IST; 11min ago
+ Invocation: 6bbb99ad50814db8b86a3f2329ec20b4
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 3921 (dockerd)
+      Tasks: 48
+     Memory: 140.8M (peak: 142.2M)
+        CPU: 2.942s
+     CGroup: /system.slice/docker.service
+             ├─3921 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+$ journalctl -u ssh.service --since today --no-pager -n 5
+-- No entries --
+
