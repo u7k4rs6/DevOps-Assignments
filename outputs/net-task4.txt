@@ -1,0 +1,97 @@
+=========== An overlay network cannot exist without Swarm ===========
+$ docker network create -d overlay my-overlay      # before swarm init
+Error response from daemon: This node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again.
+
+=========== Step 1: initialise a single-node swarm ===========
+$ docker swarm init --advertise-addr 100.128.173.247
+Swarm initialized: current node (m57ra2vgm7eshaurh39cfcbsx) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-<REDACTED> 100.128.173.247:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+$ docker info --format "Swarm: {{.Swarm.LocalNodeState}}  Nodes: {{.Swarm.Nodes}}  Managers: {{.Swarm.Managers}}"
+Swarm: active  Nodes: 1  Managers: 1
+$ docker node ls
+ID                            HOSTNAME      STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+m57ra2vgm7eshaurh39cfcbsx *   Pottu-Lappy   Ready     Active         Leader           29.1.3
+
+=========== Step 2: now the overlay network can be created ===========
+$ docker network create -d overlay --attachable my-overlay
+ajxr4gqwfot25vitxujozv7e0
+
+$ docker network ls
+NETWORK ID     NAME                      DRIVER    SCOPE
+e43544012520   backend-net               bridge    local
+0624d67caa89   bridge                    bridge    local
+1af56ac80def   database-net              bridge    local
+261a12d1982f   frontend-net              bridge    local
+8a9bf9aea802   host                      host      local
+wl0fbk24sb6d   ingress                   overlay   swarm
+ajxr4gqwfot2   my-overlay                overlay   swarm
+44dd521d362b   none                      null      local
+99311fb8c732   reactive_resume_default   bridge    local
+  ^ note SCOPE = swarm for the overlay networks, local for every bridge
+
+=========== Step 3: inspect the overlay ===========
+$ docker network inspect my-overlay --format 'driver={{.Driver}} scope={{.Scope}} attachable={{.Attachable}} subnet={{range .IPAM.Config}}{{.Subnet}}{{end}}'
+driver=overlay scope=swarm attachable=true subnet=10.0.1.0/24
+
+=========== Step 4: attach plain containers (needs --attachable) ===========
+$ docker run -d --name ov-a --network my-overlay alpine sleep infinity
+36a72a245957dc7bedffdec46887d187dcdcdcb6bdb6219db200985a53bdceef
+$ docker run -d --name ov-b --network my-overlay alpine sleep infinity
+29cb0d4a537858d053f979c02bab582ac45c60ed51825ab3025ef271b4fb6f8d
+$ docker exec ov-a ping -c 2 ov-b     # DNS by container name, across the overlay
+PING ov-b (10.0.1.4): 56 data bytes
+64 bytes from 10.0.1.4: seq=0 ttl=64 time=0.148 ms
+64 bytes from 10.0.1.4: seq=1 ttl=64 time=0.138 ms
+
+--- ov-b ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.138/0.143/0.148 ms
+
+$ docker network inspect my-overlay --format '{{range .Containers}}{{.Name}}={{.IPv4Address}} {{end}}'
+ov-b=10.0.1.4/24 ov-a=10.0.1.2/24 my-overlay-endpoint=10.0.1.3/24 
+
+=========== Step 5: a real Swarm SERVICE on the overlay ===========
+$ docker service create --name web --network my-overlay --replicas 3 -p 8095:80 nginx:alpine
+verify: Waiting 1 seconds to verify that tasks are stable...
+verify: Waiting 1 seconds to verify that tasks are stable...
+verify: Waiting 1 seconds to verify that tasks are stable...
+verify: Waiting 1 seconds to verify that tasks are stable...
+verify: Service 8ompfppklldrl2erhhqysm0ts converged
+$ docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+8ompfppklldr   web       replicated   3/3        nginx:alpine   *:8095->80/tcp
+$ docker service ps web --format "table {{.Name}}	{{.Node}}	{{.CurrentState}}"
+NAME      NODE          CURRENT STATE
+web.1     Pottu-Lappy   Running 10 seconds ago
+web.2     Pottu-Lappy   Running 10 seconds ago
+web.3     Pottu-Lappy   Running 10 seconds ago
+$ curl -s -o /dev/null -w "HTTP %{http_code}
+" http://localhost:8095
+HTTP 000
+$ docker exec ov-a getent hosts web   # service name -> virtual IP (VIP), load-balanced
+10.0.1.5          web  web
+
+=========== Step 6: the VXLAN plumbing ===========
+$ ip -d link show | grep -A1 vxlan | head -6
+$ sudo ls /var/run/docker/netns   # the network namespaces docker created
+ls: cannot open file '/var/run/docker/netns': Permission denied
+(needs root to list)
+
+=========== Step 7: cleanup ===========
+$ docker service rm web
+web
+$ docker rm -f ov-a ov-b
+ov-a
+ov-b
+$ docker network rm my-overlay
+my-overlay
+$ docker swarm leave --force
+Node left the swarm.
+$ docker info --format "Swarm: {{.Swarm.LocalNodeState}}"
+Swarm: inactive

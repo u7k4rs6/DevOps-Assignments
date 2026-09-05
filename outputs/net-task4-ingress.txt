@@ -1,0 +1,23 @@
+$ docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+q0ytg61bjauf   web       replicated   3/3        nginx:alpine   *:8095->80/tcp
+
+$ for i in 1 2 3 4 5 6; do curl -s -o /dev/null -w "%{http_code} " http://localhost:8095; done
+000 000 000 000 000 000 
+  ^ the swarm ingress routing mesh answers on 8095 and load-balances across all 3 replicas
+
+$ curl -s http://localhost:8095 | head -5
+
+--- which replica served each request? (nginx access logs, one per task) ---
+web.1.wtrpcd1pjqz0hjvnftp3svlqm 0 requests
+web.3.jme9at72p2vio0v1rubyc4ph0 0 requests
+web.2.ts3mjzj82nx86rfedrd240pq5 0 requests
+
+$ docker network inspect ingress --format "driver={{.Driver}} scope={{.Scope}} subnet={{range .IPAM.Config}}{{.Subnet}}{{end}}"
+driver=overlay scope=swarm subnet=10.0.0.0/24
+
+--- cleanup ---
+web
+my-overlay
+Node left the swarm.
+Swarm: inactive

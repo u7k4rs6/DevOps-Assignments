@@ -1,0 +1,52 @@
+$ pwd
+/home/utkuputku/Desktop/Devops-ass/Docker Network
+$ cat bind-mount/index.html | grep -o "<h1>.*</h1>"
+<h1>Hello students</h1>
+
+=========== Step 1: mount the host folder as nginx web root ===========
+$ docker run -d --name nginx-bind -v "$(pwd)/bind-mount":/usr/share/nginx/html -p 8090:80 nginx:alpine
+fcd8f46f859fce68763ac99852250cdd93dbcdf807d4fb6d7980549cb8226835
+
+$ docker ps --filter name=nginx-bind --format "table {{.Names}}	{{.Status}}	{{.Ports}}"
+NAMES        STATUS         PORTS
+nginx-bind   Up 3 seconds   0.0.0.0:8090->80/tcp, [::]:8090->80/tcp
+
+=========== Step 2: verify the content is served ===========
+$ curl -s http://localhost:8090 | grep -o "<h1>.*</h1>"
+<h1>Hello students</h1>
+
+=========== Step 3: the mount really is the same directory ===========
+$ docker inspect nginx-bind --format '{{range .Mounts}}{{.Type}} {{.Source}} -> {{.Destination}} rw={{.RW}}{{end}}'
+bind  /home/utkuputku/Desktop/Devops-ass/Docker Network/bind-mount -> /usr/share/nginx/html  rw=true
+
+$ ls -i bind-mount/index.html                       # inode on the host
+8263287 bind-mount/index.html
+$ docker exec nginx-bind ls -i /usr/share/nginx/html/index.html   # inode in the container
+8263287 /usr/share/nginx/html/index.html
+  ^ same inode number: it is one file, not a copy
+
+=========== Step 4: edit on the host, re-check WITHOUT restarting ===========
+$ sed -i "s|<h1>Hello students</h1>|<h1>Hello students - updated live!</h1>|" bind-mount/index.html
+$ curl -s http://localhost:8090 | grep -o "<h1>.*</h1>"
+<h1>Hello students - updated live!</h1>
+  ^ no docker restart, no rebuild - the change is live
+
+=========== Step 5: it works in the other direction too ===========
+$ docker exec nginx-bind sh -c "echo \"<!-- written from inside the container -->\" >> /usr/share/nginx/html/index.html"
+$ tail -1 bind-mount/index.html   # visible on the host immediately
+<!-- written from inside the container -->
+
+=========== Step 6: contrast - a COPY-based image does NOT update ===========
+$ docker run -d --name nginx-copy -p 8091:80 nginx-hello   # index.html baked in with COPY
+44c997b258ca9520717c6dcc54c124a10ac91bb860691cf0b761b6bebdc01ef9
+$ sed -i "s|Hello World from Nginx!|EDITED ON HOST|" ../DockerFundamentals/nginx-app/index.html
+$ grep -o "<h1>.*</h1>" ../DockerFundamentals/nginx-app/index.html   # host file changed
+<h1>EDITED ON HOST</h1>
+$ curl -s http://localhost:8091 | grep -o "<h1>.*</h1>"                # container did NOT change
+<h1>Hello World from Nginx!</h1>
+  ^ COPY snapshots at build time; only a rebuild would pick this up
+--- restoring the source file ---
+<h1>Hello World from Nginx!</h1>
+
+--- restoring bind-mount/index.html to its original text ---
+<h1>Hello students</h1>
