@@ -1,0 +1,15 @@
+# Single-stage equivalent of Dockerfile, built ONLY for comparison.
+# Same app, same base image - but dev dependencies (eslint, jest) and the
+# npm cache all ship to production because there is no second stage to
+# copy a clean subset into.
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+CMD ["npm", "start"]
