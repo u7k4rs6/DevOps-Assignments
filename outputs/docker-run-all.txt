@@ -1,0 +1,101 @@
+$ docker run -d --name multi-stage-container -p 8080:8080 multi-stage-hello
+8d541f31e5baf231818666ad48f710e7a23905ba8e18ccf433336a20281586cf
+$ docker run -d --name nodejs-container      -p 3000:3000 nodejs-hello
+3e5fc604754503f85e878cda7af2e46dcdd52ad38cf2d0ab388e0f382cee119d
+$ docker run -d --name python-container      -p 5001:5000 python-hello
+cace4218fa535a489b99ce553e52179d3ca6b06b641b0073960b57058735d8fc
+$ docker run -d --name java-container        -p 8082:8080 java-hello
+26cc9e89aa54bebf4b190e400c960396d6d73b68282cfa84f4a4a7e7c2fa4614
+$ docker run -d --name nginx-container       -p 8081:80   nginx-hello
+3f0400a41e38849974c4393b17d394581ae6ebd0d214322a10dfb5363d76d0fd
+$ docker run -d --name apache-container      -p 8083:80   apache-hello
+1d0340e4ad8fa2f7888ce6f24416265b7d32be05784539af3be9c4ed4a380a2e
+
+$ docker ps
+CONTAINER ID   IMAGE                        STATUS                    PORTS                                                                                               NAMES
+1d0340e4ad8f   apache-hello                 Up 6 seconds              0.0.0.0:8083->80/tcp, [::]:8083->80/tcp                                                             apache-container
+3f0400a41e38   nginx-hello                  Up 6 seconds              0.0.0.0:8081->80/tcp, [::]:8081->80/tcp                                                             nginx-container
+26cc9e89aa54   java-hello                   Up 6 seconds              0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp                                                         java-container
+cace4218fa53   python-hello                 Up 7 seconds              0.0.0.0:5001->5000/tcp, [::]:5001->5000/tcp                                                         python-container
+3e5fc6047545   nodejs-hello                 Up 7 seconds              0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp                                                         nodejs-container
+8d541f31e5ba   multi-stage-hello            Up 7 seconds              0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp                                                         multi-stage-container
+6cf63fe4372b   postgres:latest              Up 21 minutes (healthy)   127.0.0.1:5432->5432/tcp                                                                            reactive_resume-postgres-1
+a3b6f1c22017   redis:latest                 Up 21 minutes (healthy)   127.0.0.1:6379->6379/tcp                                                                            reactive_resume-redis-1
+29975b774f61   chrislusf/seaweedfs:latest   Up 21 minutes (healthy)   7333/tcp, 8080/tcp, 8888/tcp, 9333/tcp, 18080/tcp, 18888/tcp, 19333/tcp, 127.0.0.1:8333->8333/tcp   reactive_resume-seaweedfs-1
+
+--- curl every app ---
+             (8080 multi-stage): 
+             (3000 node.js   ): 
+             (5001 python    ): 
+             (8082 java      ): 
+             (8081 nginx     ): 
+             (8083 apache    ): 
+
+$ docker ps --format "table {{.ID}}	{{.Image}}	{{.Status}}	{{.Ports}}	{{.Names}}"
+CONTAINER ID   IMAGE               STATUS          PORTS                                         NAMES
+1d0340e4ad8f   apache-hello        Up 29 seconds   0.0.0.0:8083->80/tcp, [::]:8083->80/tcp       apache-container
+3f0400a41e38   nginx-hello         Up 30 seconds   0.0.0.0:8081->80/tcp, [::]:8081->80/tcp       nginx-container
+26cc9e89aa54   java-hello          Up 30 seconds   0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp   java-container
+cace4218fa53   python-hello        Up 30 seconds   0.0.0.0:5001->5000/tcp, [::]:5001->5000/tcp   python-container
+3e5fc6047545   nodejs-hello        Up 30 seconds   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   nodejs-container
+8d541f31e5ba   multi-stage-hello   Up 31 seconds   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   multi-stage-container
+
+--- curl every app ---
+$ curl -s http://localhost:8080
+<h1>Hello World from Docker multi-stage build</h1>
+$ curl -s http://localhost:3000
+<h1>Hello World from Node.js!</h1>
+$ curl -s http://localhost:5001
+<h1>Hello World from Python!</h1>
+$ curl -s http://localhost:8082
+<h1>Hello World from Java!</h1>
+$ curl -s http://localhost:8081 | grep -o "<h1>.*</h1>"
+<h1>Hello World from Nginx!</h1>
+$ curl -s http://localhost:8083 | grep -o "<h1>.*</h1>"
+<h1>Hello World from Apache!</h1>
+
+--- JSON health endpoints ---
+$ curl -s http://localhost:8080/health
+{"status":"ok","build":"multi-stage","node":"v20.20.2"}
+$ curl -s http://localhost:5001/health
+{"stack":"python","status":"ok"}
+
+
+=========== image sizes ===========
+$ docker images --format "table {{.Repository}}	{{.Tag}}	{{.Size}}" | grep hello
+REPOSITORY                                      TAG                  SIZE
+apache-hello                                    latest               175MB
+nginx-hello                                     latest               102MB
+java-hello                                      latest               721MB
+python-hello                                    latest               1.62GB
+nodejs-hello                                    latest               1.59GB
+single-stage-hello                              latest               414MB
+multi-stage-hello                               latest               200MB
+
+$ docker image ls --format "{{.Repository}} {{.Size}}"  (sorted)
+apache-hello	175MB
+java-hello	721MB
+multi-stage-hello	200MB
+nginx-hello	102MB
+nodejs-hello	1.59GB
+python-hello	1.62GB
+single-stage-hello	414MB
+
+--- how many packages ended up in each Node image? ---
+$ docker run --rm multi-stage-hello  sh -c "ls node_modules | wc -l"
+79
+$ docker run --rm single-stage-hello sh -c "ls node_modules | wc -l"
+307
+$ docker run --rm multi-stage-hello  sh -c "ls"
+node_modules
+package-lock.json
+package.json
+server.js
+$ docker run --rm single-stage-hello sh -c "ls"
+Dockerfile
+Dockerfile.single-stage
+node_modules
+package-lock.json
+package.json
+script.sh
+server.js
