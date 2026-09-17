@@ -24,8 +24,8 @@ Solutions to the DevOps assignment set. **Each assignment is a self-contained fo
 
 ## Sessions 09-12 (in progress)
 
-Submission folders are in place. Session 11 has a full evidence checklist (commands written, screenshots
-not yet captured); Session 12 has its screenshots captured. Sessions 09 and 10 are still templates.
+Submission folders are in place. Sessions 11 and 12 are documented with captured screenshots.
+Sessions 09 and 10 are still templates.
 
 | Session | Topic | Submission |
 |---|---|---|
