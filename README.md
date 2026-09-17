@@ -24,13 +24,14 @@ Solutions to the DevOps assignment set. **Each assignment is a self-contained fo
 
 ## Sessions 09-12 (in progress)
 
-Submission folders are in place; the screenshot requirements are not filled in yet.
+Submission folders are in place. Session 11 has a full evidence checklist (commands written, screenshots
+not yet captured); Session 12 has its screenshots captured. Sessions 09 and 10 are still templates.
 
 | Session | Topic | Submission |
 |---|---|---|
 | 09 | Kubernetes | [screenshot.md](session-09-k8s/screenshot.md) |
 | 10 | Kubernetes Core Objects | [screenshot.md](session-10-k8s-core-objects/screenshot.md) |
-| 11 | Kubernetes Services | [screenshot.md](session-11-kubernetes-services/screenshot.md) |
+| 11 | Kubernetes Services: ClusterIP, NodePort, LoadBalancer, ExternalName, Headless Services | [screenshot.md](session-11-kubernetes-services/screenshot.md) |
 | 12 | Ingress, ConfigMaps & Secrets | [screenshot.md](session-12-ingress-configmaps-secrets/screenshot.md) |
 
 ---
