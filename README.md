@@ -22,6 +22,19 @@ Solutions to the DevOps assignment set. **Each assignment is a self-contained fo
 
 ---
 
+## Sessions 09-12 (in progress)
+
+Submission folders are in place; the screenshot requirements are not filled in yet.
+
+| Session | Topic | Submission |
+|---|---|---|
+| 09 | Kubernetes | [screenshot.md](session-09-k8s/screenshot.md) |
+| 10 | Kubernetes Core Objects | [screenshot.md](session-10-k8s-core-objects/screenshot.md) |
+| 11 | Kubernetes Services | [screenshot.md](session-11-kubernetes-services/screenshot.md) |
+| 12 | Ingress, ConfigMaps & Secrets | [screenshot.md](session-12-ingress-configmaps-secrets/screenshot.md) |
+
+---
+
 ## Repository layout
 
 Every folder follows the same shape: a `README.md` write-up, the source it documents, an `outputs/` directory of raw unedited command logs, and `screenshots/` where the assignment calls for them.
