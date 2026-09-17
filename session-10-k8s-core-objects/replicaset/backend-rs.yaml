@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: yatri-backend-rs
+  namespace: session10
+  labels:
+    app: yatri-backend-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: yatri-backend-rs
+  template:
+    metadata:
+      labels:
+        app: yatri-backend-rs
+    spec:
+      containers:
+        - name: backend
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"

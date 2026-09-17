@@ -1,0 +1,35 @@
+### All six lifecycle states
+NAME                  READY   STATUS             RESTARTS        AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+lifecycle-crashloop   0/1     Error              9 (5m18s ago)   21m   10.244.0.26   minikube   <none>           <none>
+lifecycle-failed      0/1     Error              0               21m   10.244.0.25   minikube   <none>           <none>
+lifecycle-imagepull   0/1     ImagePullBackOff   0               21m   10.244.0.28   minikube   <none>           <none>
+lifecycle-pending     0/1     Pending            0               21m   <none>        <none>     <none>           <none>
+lifecycle-readiness   1/1     Running            0               21m   10.244.0.29   minikube   <none>           <none>
+lifecycle-succeeded   0/1     Completed          0               21m   10.244.0.27   minikube   <none>           <none>
+
+### succeeded - logs
+Task started
+Task completed successfully
+
+### failed - logs
+Task started
+Task failed
+### failed - phase/exit code
+phase=Failed exitCode=1 reason=Error
+
+### crashloop - restarts + state
+restartCount=9 reason=
+Starting up...
+Fatal error, crashing
+
+### pending - scheduler event
+  Type     Reason            Age                 From               Message
+  ----     ------            ----                ----               -------
+  Warning  FailedScheduling  21m                 default-scheduler  0/1 nodes are available: 1 Insufficient cpu, 1 Insufficient memory. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+  Warning  FailedScheduling  7m4s (x9 over 21m)  default-scheduler  0/1 nodes are available: 1 Insufficient cpu, 1 Insufficient memory. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+
+### imagepull - state
+reason=ImagePullBackOff
+
+### readiness - ready condition
+ready=true phase=Running

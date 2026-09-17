@@ -1,0 +1,3 @@
+### Split A - 4 stable : 1 canary
+      5 CANARY v2
+     15 STABLE v1

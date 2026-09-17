@@ -1,0 +1,4 @@
+
+### 4. Deleted - ReplicaSet and its pods are gone
+No resources found in session10 namespace.
+No resources found in session10 namespace.

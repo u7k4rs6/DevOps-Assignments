@@ -1,0 +1,15 @@
+# INTENTIONAL FAILURE: the tag does not exist on Docker Hub, so the pull fails
+# -> ErrImagePull, then ImagePullBackOff once the kubelet backs off.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-imagepull
+  namespace: session10
+  labels:
+    app: lifecycle
+    state: imagepull
+spec:
+  containers:
+    - name: missing
+      image: busybox:this-tag-does-not-exist-v999
+      command: ["sh", "-c", "sleep 3600"]

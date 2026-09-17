@@ -1,0 +1,30 @@
+# strategy.type: Recreate -> ALL old pods are terminated before ANY new pod is created.
+# This causes brief downtime, unlike the default RollingUpdate.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-recreate
+  namespace: session10
+  labels:
+    app: app-recreate
+spec:
+  replicas: 4
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: app-recreate
+  template:
+    metadata:
+      labels:
+        app: app-recreate
+        version: v1
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits: {cpu: "100m", memory: "64Mi"}

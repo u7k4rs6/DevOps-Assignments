@@ -1,0 +1,12 @@
+### Service selector AFTER switch
+Selector:                 app=myapp,slot=green
+
+### Endpoints now point at the green pods
+10.244.0.43 10.244.0.42
+app-green-7677955597-6jbxb 10.244.0.42
+app-green-7677955597-vztnt 10.244.0.43
+
+### curl http://192.168.49.2:30020  (expect GREEN)
+GREEN ENVIRONMENT
+Version: v2
+Slot: GREEN (STANDBY -> PROMOTED)

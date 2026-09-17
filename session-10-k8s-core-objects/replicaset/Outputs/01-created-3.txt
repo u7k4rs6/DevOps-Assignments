@@ -1,0 +1,7 @@
+### 1. Created with 3 replicas
+NAME               DESIRED   CURRENT   READY   AGE
+yatri-backend-rs   3         3         3       3s
+NAME                     READY   STATUS    RESTARTS   AGE
+yatri-backend-rs-cvtpl   1/1     Running   0          3s
+yatri-backend-rs-l6j2s   1/1     Running   0          3s
+yatri-backend-rs-vjmb4   1/1     Running   0          3s

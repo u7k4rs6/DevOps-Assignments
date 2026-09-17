@@ -1,0 +1,18 @@
+### Both deployments up
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/app-blue    2/2     2            2           1s
+deployment.apps/app-green   2/2     2            2           1s
+
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/app-blue-657d4bb669-p5sjz    1/1     Running   0          1s
+pod/app-blue-657d4bb669-p7sl9    1/1     Running   0          1s
+pod/app-green-7677955597-6jbxb   1/1     Running   0          1s
+pod/app-green-7677955597-vztnt   1/1     Running   0          1s
+
+### Service selector BEFORE switch
+Selector:                 app=myapp,slot=blue
+
+### curl http://192.168.49.2:30020  (expect BLUE)
+BLUE ENVIRONMENT
+Version: v1
+Slot: BLUE (LIVE)

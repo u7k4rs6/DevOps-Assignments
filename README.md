@@ -24,13 +24,14 @@ Solutions to the DevOps assignment set. **Each assignment is a self-contained fo
 
 ## Sessions 09-12 (in progress)
 
-Submission folders are in place. Sessions 11 and 12 are documented with captured screenshots.
-Sessions 09 and 10 are still templates.
+Submission folders are in place. Session 10 is fully executed against a live minikube cluster with
+per-exercise write-ups; sessions 11 and 12 are documented with captured screenshots. Session 09 is
+still a template.
 
 | Session | Topic | Submission |
 |---|---|---|
 | 09 | Kubernetes | [screenshot.md](session-09-k8s/screenshot.md) |
-| 10 | Kubernetes Core Objects | [screenshot.md](session-10-k8s-core-objects/screenshot.md) |
+| 10 | Kubernetes Core Objects: pod lifecycle, Deployment, ReplicaSet, Blue-Green, Canary, Recreate, DaemonSet, troubleshooting | [README.md](session-10-k8s-core-objects/README.md) |
 | 11 | Kubernetes Services: ClusterIP, NodePort, LoadBalancer, ExternalName, Headless Services | [screenshot.md](session-11-kubernetes-services/screenshot.md) |
 | 12 | Ingress, ConfigMaps & Secrets | [screenshot.md](session-12-ingress-configmaps-secrets/screenshot.md) |
 

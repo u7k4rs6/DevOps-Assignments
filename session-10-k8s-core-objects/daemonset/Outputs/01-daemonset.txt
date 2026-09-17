@@ -1,0 +1,9 @@
+### DaemonSet
+NAME                 DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+node-logging-agent   1         1         1       1            1           <none>          9s
+
+NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+node-logging-agent-bxfm4   1/1     Running   0          9s    10.244.0.62   minikube   <none>           <none>
+
+### logs (proves the container is alive and looping)
+[Thu Sep 17 20:43:09 UTC 2026] log agent alive on node minikube

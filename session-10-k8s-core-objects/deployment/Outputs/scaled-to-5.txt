@@ -1,0 +1,6 @@
+NAME                            READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+yatri-backend-77f6b975d-45nfc   1/1     Running   0          35s   10.244.0.31   minikube   <none>           <none>
+yatri-backend-77f6b975d-frpn4   1/1     Running   0          35s   10.244.0.32   minikube   <none>           <none>
+yatri-backend-77f6b975d-fw4md   1/1     Running   0          35s   10.244.0.30   minikube   <none>           <none>
+yatri-backend-77f6b975d-lp4wd   1/1     Running   0          2s    10.244.0.33   minikube   <none>           <none>
+yatri-backend-77f6b975d-vbbsk   1/1     Running   0          2s    10.244.0.34   minikube   <none>           <none>

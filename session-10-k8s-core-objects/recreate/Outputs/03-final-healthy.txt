@@ -1,0 +1,17 @@
+### Final state - healthy, v2
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES              SELECTOR
+app-recreate   4/4     4            4           91s   web          nginx:1.29-alpine   app=app-recreate
+NAME                           READY   STATUS    RESTARTS   AGE   VERSION
+app-recreate-c78bc54d7-gjztj   1/1     Running   0          77s   v2
+app-recreate-c78bc54d7-vhsfd   1/1     Running   0          77s   v2
+app-recreate-c78bc54d7-z6d7b   1/1     Running   0          77s   v2
+app-recreate-c78bc54d7-zgct5   1/1     Running   0          77s   v2
+
+### strategy
+Recreate
+### rollout history
+deployment.apps/app-recreate 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+

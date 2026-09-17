@@ -1,0 +1,21 @@
+### kubectl get all -n session10-broken
+NAME                                 READY   STATUS             RESTARTS   AGE
+pod/yatri-backend-69987f6996-h6rzw   0/1     ImagePullBackOff   0          28s
+pod/yatri-backend-69987f6996-vmfpm   0/1     ImagePullBackOff   0          28s
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/yatri-backend   0/2     2            0           28s
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/yatri-backend-69987f6996   2         2         0       28s
+
+### describe pod yatri-backend-69987f6996-h6rzw  (Events section)
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  28s                default-scheduler  Successfully assigned session10-broken/yatri-backend-69987f6996-h6rzw to minikube
+  Normal   BackOff    26s                kubelet            spec.containers{backend}: Back-off pulling image "yatri-backend:non-existent-tag-v999"
+  Warning  Failed     26s                kubelet            spec.containers{backend}: Error: ImagePullBackOff
+  Normal   Pulling    12s (x2 over 28s)  kubelet            spec.containers{backend}: Pulling image "yatri-backend:non-existent-tag-v999"
+  Warning  Failed     11s (x2 over 26s)  kubelet            spec.containers{backend}: Failed to pull image "yatri-backend:non-existent-tag-v999": failed to pull and unpack image "docker.io/library/yatri-backend:non-existent-tag-v999": failed to resolve reference "docker.io/library/yatri-backend:non-existent-tag-v999": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     11s (x2 over 26s)  kubelet            spec.containers{backend}: Error: ErrImagePull

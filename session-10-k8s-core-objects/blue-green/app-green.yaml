@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: green-content
+  namespace: session10
+data:
+  index.html: |
+    GREEN ENVIRONMENT
+    Version: v2
+    Slot: GREEN (STANDBY -> PROMOTED)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-green
+  namespace: session10
+  labels:
+    app: myapp
+    slot: green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+      slot: green
+  template:
+    metadata:
+      labels:
+        app: myapp
+        slot: green
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits: {cpu: "100m", memory: "64Mi"}
+      volumes:
+        - name: content
+          configMap:
+            name: green-content

@@ -1,0 +1,19 @@
+# INTENTIONAL FAILURE: exits non-zero with restartPolicy Always, so the kubelet
+# restarts it with growing backoff -> CrashLoopBackOff and a rising restart count.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-crashloop
+  namespace: session10
+  labels:
+    app: lifecycle
+    state: crashloop
+spec:
+  restartPolicy: Always
+  containers:
+    - name: crasher
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - 'echo "Starting up..."; sleep 2; echo "Fatal error, crashing"; exit 1'

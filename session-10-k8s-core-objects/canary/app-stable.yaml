@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stable-content
+  namespace: session10
+data:
+  index.html: |
+    STABLE v1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-stable
+  namespace: session10
+  labels:
+    app: app
+    version: stable
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: app
+      version: stable
+  template:
+    metadata:
+      labels:
+        app: app          # shared label - this is what the Service selects on
+        version: stable
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits: {cpu: "100m", memory: "64Mi"}
+      volumes:
+        - name: content
+          configMap:
+            name: stable-content

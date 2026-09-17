@@ -1,0 +1,29 @@
+# INTENTIONALLY BROKEN - DO NOT FIX.
+# The image yatri-backend:non-existent-tag-v999 does not exist in any registry,
+# so pods go ErrImagePull -> ImagePullBackOff. This is the troubleshooting exercise.
+# Deliberately isolated in the session10-broken namespace so it cannot collide with
+# the healthy yatri-backend Deployment in the session10 namespace.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yatri-backend
+  namespace: session10-broken
+  labels:
+    app: yatri-backend
+    status: intentionally-broken
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: yatri-backend
+  template:
+    metadata:
+      labels:
+        app: yatri-backend
+        status: intentionally-broken
+    spec:
+      containers:
+        - name: backend
+          image: yatri-backend:non-existent-tag-v999
+          ports:
+            - containerPort: 80

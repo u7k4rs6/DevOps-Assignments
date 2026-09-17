@@ -1,0 +1,16 @@
+
+### Split B - 7 stable : 3 canary (after scaling)
+NAME                          READY   STATUS    RESTARTS   AGE    VERSION
+app-canary-7f94f9bc8f-7zbcx   1/1     Running   0          1s     canary
+app-canary-7f94f9bc8f-hgrpg   1/1     Running   0          1s     canary
+app-canary-7f94f9bc8f-w8j99   1/1     Running   0          3m5s   canary
+app-stable-786ccc987c-4xzqq   1/1     Running   0          3m5s   stable
+app-stable-786ccc987c-7cxj4   1/1     Running   0          1s     stable
+app-stable-786ccc987c-7dct5   1/1     Running   0          3m5s   stable
+app-stable-786ccc987c-lvbfh   1/1     Running   0          3m5s   stable
+app-stable-786ccc987c-nrfr9   1/1     Running   0          1s     stable
+app-stable-786ccc987c-xkrp6   1/1     Running   0          3m5s   stable
+app-stable-786ccc987c-zjzfc   1/1     Running   0          1s     stable
+
+      6 CANARY v2
+     14 STABLE v1

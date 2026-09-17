@@ -1,0 +1,15 @@
+# The live switch happens here: change slot: blue -> slot: green and re-apply.
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+  namespace: session10
+spec:
+  type: NodePort
+  selector:
+    app: myapp
+    slot: blue
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30020

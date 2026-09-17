@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blue-content
+  namespace: session10
+data:
+  index.html: |
+    BLUE ENVIRONMENT
+    Version: v1
+    Slot: BLUE (LIVE)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-blue
+  namespace: session10
+  labels:
+    app: myapp
+    slot: blue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+      slot: blue
+  template:
+    metadata:
+      labels:
+        app: myapp
+        slot: blue
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits: {cpu: "100m", memory: "64Mi"}
+      volumes:
+        - name: content
+          configMap:
+            name: blue-content

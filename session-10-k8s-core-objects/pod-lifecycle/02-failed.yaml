@@ -1,0 +1,18 @@
+# INTENTIONAL FAILURE: exits non-zero with restartPolicy Never -> phase Failed.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-failed
+  namespace: session10
+  labels:
+    app: lifecycle
+    state: failed
+spec:
+  restartPolicy: Never
+  containers:
+    - name: task
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - 'echo "Task started"; sleep 3; echo "Task failed"; exit 1'

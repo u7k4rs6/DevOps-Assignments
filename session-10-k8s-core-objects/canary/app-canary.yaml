@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: canary-content
+  namespace: session10
+data:
+  index.html: |
+    CANARY v2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-canary
+  namespace: session10
+  labels:
+    app: app
+    version: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: app          # same shared label as stable -> same Service
+        version: canary
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests: {cpu: "10m", memory: "16Mi"}
+            limits: {cpu: "100m", memory: "64Mi"}
+      volumes:
+        - name: content
+          configMap:
+            name: canary-content

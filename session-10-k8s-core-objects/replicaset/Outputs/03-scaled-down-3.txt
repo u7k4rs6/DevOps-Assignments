@@ -1,0 +1,7 @@
+### 3. Scaled back down to 3
+NAME               DESIRED   CURRENT   READY   AGE
+yatri-backend-rs   3         3         3       78s
+NAME                     READY   STATUS    RESTARTS   AGE
+yatri-backend-rs-bdf8s   1/1     Running   0          75s
+yatri-backend-rs-cvtpl   1/1     Running   0          78s
+yatri-backend-rs-vjmb4   1/1     Running   0          78s
